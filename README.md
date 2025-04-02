@@ -1,4 +1,4 @@
-# Checkbox Tick-Tones for Obsidian
+# Checkbox Tick Tones for Obsidian
 
 This is a plugin for [Obsidian](https://obsidian.md/) that adds a tick-tones checkbox to the editor.
 
