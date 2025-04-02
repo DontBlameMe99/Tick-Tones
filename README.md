@@ -7,7 +7,7 @@ This is a plugin for [Obsidian](https://obsidian.md/) that adds a tick-tones che
 ### From Obsidian
 
 1. Open the **Settings** window in Obsidian.
-2. Go to **Community plugins** and enable **Tick-Tones**.
+2. Go to **Community plugins** and enable **Tick Tones**.
 3. Configure the plugin's settings to your liking.
 4. Close the **Settings** window.
 
@@ -18,7 +18,7 @@ This is a plugin for [Obsidian](https://obsidian.md/) that adds a tick-tones che
 3. Copy the folder to your vault's plugin folder (`.obsidian/plugins/`).
 4. Reload Obsidian.
 5. Open the **Settings** window in Obsidian.
-6. Enable **Tick-Tones**.
+6. Enable **Tick Tones**.
 
 ## Usage
 
