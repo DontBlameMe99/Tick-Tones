@@ -1,11 +1,4 @@
-import {
-  App,
-  Plugin,
-  PluginSettingTab,
-  Setting,
-  FileSystemAdapter,
-  MarkdownView,
-} from "obsidian";
+import { Plugin } from "obsidian";
 import { SoundManager } from "./soundManager";
 import { TickTonesSettings, DEFAULT_SETTINGS } from "./types";
 import { TickTonesSettingsTab } from "./settings";
