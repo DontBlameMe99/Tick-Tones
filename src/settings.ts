@@ -1,5 +1,5 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import TickTonesSounds from "./main";
+import TickTonesSounds from "../main";
 import { SoundManager } from "./soundManager";
 
 export class TickTonesSettingsTab extends PluginSettingTab {
@@ -16,21 +16,29 @@ export class TickTonesSettingsTab extends PluginSettingTab {
 
   public display(): void {
     const { containerEl } = this;
-
     containerEl.empty();
 
     const soundOptions = Object.keys(this.soundManager.getSounds());
 
     if (soundOptions.length === 0) {
       containerEl.createEl("p", {
-        text: "No sounds found in the assets folder. Please add some sounds to the plugin's assets folder (.wav files) and reload the plugin.",
+        text: "No sounds found. ",
+      });
+      containerEl.createEl("p", {
+        text: "Please add some sounds to the plugin.",
+      });
+      containerEl.createEl("p", {
+        text: "You can find instructions and examples here: ",
+      });
+      containerEl.createEl("a", {
+        text: "README",
+        href: "https://github.com/DontBlameMe99/Tick-Tones",
       });
       return;
     }
 
-    // Dropdown for selecting sound
     new Setting(containerEl)
-      .setName("Checkbox Tick Sound")
+      .setName("Checkbox tick sound")
       .setDesc("Select a sound to play when a checkbox is ticked.")
       .addDropdown((dropdown) => {
         soundOptions.forEach((sound) => dropdown.addOption(sound, sound));
@@ -41,17 +49,14 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         });
       });
 
-    // Button for testing/playing the selected sound
     new Setting(containerEl)
-      .setName("Test Selected Sound")
+      .setName("Test selected sound")
       .setDesc("Click to play the currently selected sound.")
       .addButton((button) => {
-        button.setButtonText("Play Sound");
+        button.setButtonText("Play sound");
         button.onClick(() => {
           const selectedSound = this.plugin.settings.soundSetting;
-          if (selectedSound) {
-            this.soundManager.playSound(selectedSound);
-          }
+          selectedSound && this.soundManager.playSound(selectedSound);
         });
       });
   }

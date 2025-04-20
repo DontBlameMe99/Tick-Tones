@@ -1,7 +1,7 @@
 import { Plugin } from "obsidian";
-import { SoundManager } from "./soundManager";
-import { TickTonesSettings, DEFAULT_SETTINGS } from "./types";
-import { TickTonesSettingsTab } from "./settings";
+import { SoundManager } from "src/soundManager";
+import { TickTonesSettings, DEFAULT_SETTINGS } from "src/types";
+import { TickTonesSettingsTab } from "src/settings";
 
 export default class TickTones extends Plugin {
   settings: TickTonesSettings;
@@ -11,6 +11,8 @@ export default class TickTones extends Plugin {
     await this.loadSettings();
 
     this.soundManager = new SoundManager(this.app, this.manifest);
+
+    await this.soundManager.init();
 
     this.addSettingTab(
       new TickTonesSettingsTab(this.app, this, this.soundManager),
