@@ -18,9 +18,9 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    const soundOptions = Object.keys(this.soundManager.getSounds());
+    const sounds = this.soundManager.getSounds();
 
-    if (soundOptions.length === 0) {
+    if (sounds.length === 0) {
       containerEl.createEl("p", {
         text: "No sounds found. ",
       });
@@ -41,7 +41,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
       .setName("Checkbox tick sound")
       .setDesc("Select a sound to play when a checkbox is ticked.")
       .addDropdown((dropdown) => {
-        soundOptions.forEach((sound) => dropdown.addOption(sound, sound));
+        sounds.forEach((sound) => dropdown.addOption(sound, sound));
         dropdown.setValue(this.plugin.settings.soundSetting);
         dropdown.onChange(async (value) => {
           this.plugin.settings.soundSetting = value;

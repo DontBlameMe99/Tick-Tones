@@ -11,7 +11,8 @@ export default class TickTones extends Plugin {
   async onload() {
     try {
       await this.loadSettings();
-      this.soundManager = new SoundManager(this.app, this.manifest);
+      this.soundManager = new SoundManager(this.app, this.manifest.dir!);
+      this.soundManager.init();
     } catch (err) {
       console.error("TickTones: Failed to load settings, using defaults.", err);
       this.settings = { ...DEFAULT_SETTINGS };
@@ -38,6 +39,7 @@ export default class TickTones extends Plugin {
     if (this.clickHandler) {
       document.removeEventListener("click", this.clickHandler, true);
       this.clickHandler = undefined;
+      this.soundManager.unload();
     }
   }
 
