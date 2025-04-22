@@ -45,7 +45,19 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         dropdown.setValue(this.plugin.settings.soundSetting);
         dropdown.onChange(async (value) => {
           this.plugin.settings.soundSetting = value;
-          await this.plugin.saveSettings();
+          this.plugin.saveSettings();
+        });
+      });
+
+    new Setting(containerEl)
+      .setName("Modify tick sound volume")
+      .setDesc("Adjust the volume of the tick sound.")
+      .addSlider((slider) => {
+        slider.setLimits(0, 1, 0.05);
+        slider.setValue(this.plugin.settings.soundVolume);
+        slider.onChange(async (value) => {
+          this.plugin.settings.soundVolume = value;
+          this.plugin.saveSettings();
         });
       });
 
@@ -56,6 +68,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         button.setButtonText("Play sound");
         button.onClick(() => {
           const selectedSound = this.plugin.settings.soundSetting;
+
           selectedSound && this.soundManager.playSound(selectedSound);
         });
       });

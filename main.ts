@@ -5,13 +5,13 @@ import { TickTonesSettingsTab } from "src/settings";
 
 export default class TickTones extends Plugin {
   settings: TickTonesSettings = DEFAULT_SETTINGS;
-  soundManager: SoundManager;
+  private soundManager: SoundManager;
   private clickHandler: ((evt: MouseEvent) => void) | undefined;
 
   async onload() {
     try {
       await this.loadSettings();
-      this.soundManager = new SoundManager(this.app, this.manifest.dir!);
+      this.soundManager = new SoundManager(this.app, this, this.manifest.dir!);
       this.soundManager.init();
     } catch (err) {
       console.error("TickTones: Failed to load settings, using defaults.", err);
@@ -39,8 +39,9 @@ export default class TickTones extends Plugin {
     if (this.clickHandler) {
       document.removeEventListener("click", this.clickHandler, true);
       this.clickHandler = undefined;
-      this.soundManager.unload();
     }
+    this.soundManager.unload();
+    this.saveSettings();
   }
 
   async loadSettings() {
@@ -55,15 +56,15 @@ export default class TickTones extends Plugin {
     }
   }
 
-  async saveSettings() {
-    await this.saveData(this.settings);
-  }
-
   private handleCheckboxClick(evt: MouseEvent) {
     const target = evt.target as HTMLInputElement;
 
     if (target?.type === "checkbox" && target.checked) {
       this.soundManager!.playSound(this.settings.soundSetting);
     }
+  }
+
+  public saveSettings() {
+    this.saveData(this.settings);
   }
 }
