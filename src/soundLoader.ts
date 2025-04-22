@@ -1,4 +1,4 @@
-import { App, Vault, normalizePath, Notice } from "obsidian";
+import { App, Vault, normalizePath } from "obsidian";
 
 export class SoundLoader {
   private vault: Vault;
@@ -15,7 +15,16 @@ export class SoundLoader {
    */
   public async loadSounds(): Promise<Record<string, string>> {
     const soundFiles: Record<string, string> = {};
-    const supportedExtensions = [".wav", ".mp3", ".ogg"];
+    const supportedExtensions = [
+      ".wav",
+      ".mp3",
+      ".ogg",
+      ".flac",
+      ".aac",
+      ".m4a",
+      ".opus",
+      ".webm",
+    ];
 
     try {
       const assetsExist = await this.vault.adapter.exists(this.assetsPath);
@@ -29,12 +38,9 @@ export class SoundLoader {
 
       for (const file of files.files) {
         const ext = file.slice(file.lastIndexOf(".")).toLowerCase();
+
         if (supportedExtensions.includes(ext)) {
-          const fileName =
-            file
-              .split("/")
-              .pop()
-              ?.replace(/\.(wav|mp3|ogg)$/i, "") || "";
+          const fileName = file.split("/").pop()!.split(".")[0];
 
           const fileData = await this.vault.adapter.readBinary(file);
           const base64Data = uint8ToBase64(new Uint8Array(fileData));
@@ -68,6 +74,16 @@ function getMimeType(ext: string): string {
       return "audio/mpeg";
     case ".ogg":
       return "audio/ogg";
+    case ".flac":
+      return "audio/flac";
+    case ".aac":
+      return "audio/aac";
+    case ".m4a":
+      return "audio/mp4";
+    case ".opus":
+      return "audio/opus";
+    case ".webm":
+      return "audio/webm";
     case ".wav":
     default:
       return "audio/wav";

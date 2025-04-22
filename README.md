@@ -39,7 +39,7 @@ To install sounds, which you will hear when a checkbox is checked, you can eithe
 
 One important note:
 
-- The sounds must be in an **WAV** format.
+- The sounds must be in an supported audio format (these currently include `.wav`, `.mp3`, `.ogg`, `.flac`, `.aac`, `.m4a`, `.opus` and `.webm`).
 
 Now to install the sounds, you must move them to the plugin's assets folder:
 
