@@ -4,30 +4,53 @@ import { TickTonesSettings, DEFAULT_SETTINGS } from "src/types";
 import { TickTonesSettingsTab } from "src/settings";
 
 export default class TickTones extends Plugin {
-  settings: TickTonesSettings;
+  settings: TickTonesSettings = DEFAULT_SETTINGS;
   soundManager: SoundManager;
+  private clickHandler: ((evt: MouseEvent) => void) | undefined;
 
   async onload() {
-    await this.loadSettings();
+    try {
+      await this.loadSettings();
+      this.soundManager = new SoundManager(this.app, this.manifest);
+    } catch (err) {
+      console.error("TickTones: Failed to load settings, using defaults.", err);
+      this.settings = { ...DEFAULT_SETTINGS };
+    }
 
-    this.soundManager = new SoundManager(this.app, this.manifest);
+    this.clickHandler = (evt: MouseEvent) => this.handleCheckboxClick(evt);
+    document.addEventListener("click", this.clickHandler, true);
 
-    await this.soundManager.init();
+    if (!this.soundManager) {
+      console.error("SoundManager not initialized. Aborting.");
+      return;
+    }
 
-    this.addSettingTab(
-      new TickTonesSettingsTab(this.app, this, this.soundManager),
+    const tickTonesSettingsTab = new TickTonesSettingsTab(
+      this.app,
+      this,
+      this.soundManager,
     );
 
-    this.registerDomEvent(
-      document,
-      "click",
-      (evt: MouseEvent) => this.handleCheckboxClick(evt),
-      { capture: true },
-    );
+    this.addSettingTab(tickTonesSettingsTab);
+  }
+
+  async onunload() {
+    if (this.clickHandler) {
+      document.removeEventListener("click", this.clickHandler, true);
+      this.clickHandler = undefined;
+    }
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    try {
+      this.settings = Object.assign(
+        {},
+        DEFAULT_SETTINGS,
+        await this.loadData(),
+      );
+    } catch {
+      this.settings = { ...DEFAULT_SETTINGS };
+    }
   }
 
   async saveSettings() {
@@ -38,7 +61,7 @@ export default class TickTones extends Plugin {
     const target = evt.target as HTMLInputElement;
 
     if (target?.type === "checkbox" && target.checked) {
-      this.soundManager.playSound(this.settings.soundSetting);
+      this.soundManager!.playSound(this.settings.soundSetting);
     }
   }
 }
