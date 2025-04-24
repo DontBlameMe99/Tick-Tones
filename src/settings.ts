@@ -69,7 +69,12 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         button.onClick(() => {
           const selectedSound = this.plugin.settings.soundSetting;
 
-          selectedSound && this.soundManager.playSound(selectedSound);
+          if (!selectedSound) {
+            console.warn("No sound selected, cannot play sound.");
+            return;
+          }
+
+          this.soundManager.playSound(selectedSound);
         });
       });
   }
