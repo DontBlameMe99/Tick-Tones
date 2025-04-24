@@ -6,7 +6,6 @@ updates:
       interval: "weekly"
       time: "13:00"
     open-pull-requests-limit: 10
-    target-branch: "development"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -14,4 +13,3 @@ updates:
       interval: "weekly"
       time: "13:00"
     open-pull-requests-limit: 10
-    target-branch: "development"
