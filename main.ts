@@ -14,7 +14,7 @@ export default class TickTones extends Plugin {
       this.soundManager = new SoundManager(this.app, this, this.manifest.dir!);
       this.soundManager.init();
     } catch (err) {
-      console.error("TickTones: Failed to load settings, using defaults.", err);
+      console.error("Failed to load settings, using defaults.", err);
       this.settings = { ...DEFAULT_SETTINGS };
     }
 
