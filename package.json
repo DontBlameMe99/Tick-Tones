@@ -15,7 +15,7 @@
     "license": "GPL-3.0-or-later",
     "devDependencies": {
         "@types/howler": "^2.2.11",
-        "@types/node": "^16.11.6",
+        "@types/node": "^22.14.1",
         "builtin-modules": "3.3.0",
         "esbuild": "^0.25.2",
         "obsidian": "^1.8.7",
