@@ -11,6 +11,9 @@ importers:
       howler:
         specifier: ^2.2.4
         version: 2.2.4
+      semver:
+        specifier: ^7.7.1
+        version: 7.7.1
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
