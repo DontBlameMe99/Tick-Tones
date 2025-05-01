@@ -1,6 +1,6 @@
 # Checkbox Tick Tones for Obsidian
 
-This is a plugin for [Obsidian](https://obsidian.md/) that adds a tick-tones checkbox to the editor.
+This is a plugin for [Obsidian](https://obsidian.md/) which adds satisfying sounds when checking a checkbox.
 
 ## Installation
 
