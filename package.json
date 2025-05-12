@@ -18,7 +18,7 @@
     "@types/howler": "^2.2.11",
     "@types/node": "^22.15.3",
     "builtin-modules": "3.3.0",
-    "esbuild": "^0.25.2",
+    "esbuild": "^0.25.4",
     "eslint": "^9.26.0",
     "obsidian": "^1.8.7",
     "typescript": "^5.8.3",
