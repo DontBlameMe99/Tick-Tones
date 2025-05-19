@@ -16,7 +16,7 @@
   "devDependencies": {
     "@eslint/js": "^9.26.0",
     "@types/howler": "^2.2.11",
-    "@types/node": "^22.15.17",
+    "@types/node": "^22.15.19",
     "builtin-modules": "3.3.0",
     "esbuild": "^0.25.4",
     "eslint": "^9.26.0",
