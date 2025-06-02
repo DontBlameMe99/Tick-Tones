@@ -14,7 +14,7 @@
   "author": "DontBlameMe",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
+    "@eslint/js": "^9.28.0",
     "@types/howler": "^2.2.11",
     "@types/node": "^22.15.21",
     "builtin-modules": "3.3.0",
