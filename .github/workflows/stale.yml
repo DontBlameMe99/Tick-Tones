@@ -1,0 +1,64 @@
+name: 'Close stale issues and PRs'
+
+on:
+  schedule:
+    - cron: '30 1 * * *' # Runs daily at 01:30 UTC
+  workflow_dispatch:      # Allows manual runs from the Actions tab
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Stale/close timing for issues
+          days-before-stale: 30
+          days-before-close: 5
+
+          # Stale/close timing for PRs
+          days-before-pr-stale: 30
+          days-before-pr-close: 14
+
+          # Labels applied when marking as stale
+          stale-issue-label: 'stale'
+          stale-pr-label: 'stale'
+
+          # Labels that will prevent issues/PRs from being marked as stale
+          exempt-issue-labels: 'pinned,important,security'
+          exempt-pr-labels: 'work-in-progress'
+
+          # Remove the stale label if there is activity
+          remove-stale-when-updated: true
+
+          # Limit how many issues/PRs are processed per run (optional, can help with large repos)
+          operations-per-run: 30
+
+          # Messages
+          stale-issue-message: >
+            This issue is stale because it has been open for 30 days with no activity.
+            Comment or remove the stale label or this will be closed in 5 days.
+
+          close-issue-message: >
+            This issue was closed because it has been stalled for 5 days with no activity.
+
+          stale-pr-message: >
+            This PR is stale because it has been open for 30 days with no activity.
+            Comment or remove the stale label or this will be closed in 14 days.
+
+          close-pr-message: >
+            This PR was closed because it has been stalled for 14 days with no activity.
+
+          # Optionally ignore issues/PRs with certain labels or in certain states
+          exempt-all-milestones: false
+          exempt-draft-pr: true
+
+          # Optionally ignore issues/PRs assigned to someone
+          exempt-assignees: false
+
+          # Optionally ignore issues/PRs in a project board (GitHub Projects)
+          exempt-projects: false
+
+          # Optionally only process open issues/PRs (default is true)
+          only-labels: ''
