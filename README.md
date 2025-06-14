@@ -34,8 +34,8 @@ To use the tick-tones checkbox, simply check a checkbox and you will hear a soun
 
 To install sounds, which you will hear when a checkbox is checked, you can either:
 
-- Download sounds from the [assets](https://github.com/DontBlameMe99/Tick-Tones/tree/master/assets) folder.
-- Find and download your own sounds
+- Download sounds from the [assets](https://github.com/DontBlameMe99/Tick-Tones/tree/master/assets) folder (curated by us).
+- Find and download your own sounds (for example using YouTube, [Pixabay](https://pixabay.com/sound-effects/search/click/) or any other source)
 
 One important note:
 
