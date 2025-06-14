@@ -2,13 +2,30 @@ import { Plugin } from "obsidian";
 import { SoundManager } from "src/soundManager";
 import { TickTonesSettings, DEFAULT_SETTINGS } from "src/types";
 import { TickTonesSettingsTab } from "src/settings";
+import { RegisteredLeafManager } from "src/registeredLeafManager";
 
 export default class TickTones extends Plugin {
   settings: TickTonesSettings = DEFAULT_SETTINGS;
   private soundManager: SoundManager;
-  private clickHandler: ((evt: MouseEvent) => void) | undefined;
+  private registeredLeafManager: RegisteredLeafManager;
+  private clickHandler = (evt: MouseEvent) => {
+    const target = evt.target as HTMLInputElement;
+
+    if (!this.soundManager) {
+      console.error(
+        "SoundManager not initialized. Unable to play the click sound.",
+      );
+      return;
+    }
+
+    if (target?.type === "checkbox" && target.checked) {
+      this.soundManager.playSound(this.settings.soundSetting);
+    }
+  };
 
   async onload() {
+    this.registeredLeafManager = new RegisteredLeafManager(this.clickHandler);
+
     try {
       await this.loadSettings();
       this.soundManager = new SoundManager(this.app, this, this.manifest.dir!);
@@ -18,13 +35,13 @@ export default class TickTones extends Plugin {
       this.settings = { ...DEFAULT_SETTINGS };
     }
 
-    this.clickHandler = (evt: MouseEvent) => this.handleCheckboxClick(evt);
-    document.addEventListener("click", this.clickHandler, true);
-
     if (!this.soundManager) {
       console.error("SoundManager not initialized. Aborting.");
       return;
     }
+
+    this.registerCurrentLeaf();
+    this.registerFutureLeaves();
 
     const tickTonesSettingsTab = new TickTonesSettingsTab(
       this.app,
@@ -35,12 +52,40 @@ export default class TickTones extends Plugin {
     this.addSettingTab(tickTonesSettingsTab);
   }
 
+  registerCurrentLeaf() {
+    this.app.workspace.onLayoutReady(() => {
+      let activeLeaf = this.app.workspace.getLeaf();
+
+      if (!activeLeaf) {
+        return;
+      }
+
+      this.registeredLeafManager.registerLeaf(activeLeaf);
+    });
+  }
+
+  registerFutureLeaves() {
+    this.registerEvent(
+      this.app.workspace.on("active-leaf-change", (leaf) => {
+        if (!leaf) {
+          return;
+        }
+
+        this.registeredLeafManager.registerLeaf(leaf);
+      }),
+    );
+  }
+
   async onunload() {
-    if (this.clickHandler) {
-      document.removeEventListener("click", this.clickHandler, true);
-      this.clickHandler = undefined;
+    if (this.registeredLeafManager) {
+      this.registeredLeafManager.getRegisteredLeaves().forEach((leaf) => {
+        this.registeredLeafManager.unregisterLeaf(leaf);
+      });
     }
-    this.soundManager.unload();
+
+    if (this.soundManager) {
+      this.soundManager.unload();
+    }
     this.saveSettings();
   }
 
@@ -53,14 +98,6 @@ export default class TickTones extends Plugin {
       );
     } catch {
       this.settings = { ...DEFAULT_SETTINGS };
-    }
-  }
-
-  private handleCheckboxClick(evt: MouseEvent) {
-    const target = evt.target as HTMLInputElement;
-
-    if (target?.type === "checkbox" && target.checked) {
-      this.soundManager!.playSound(this.settings.soundSetting);
     }
   }
 
