@@ -54,7 +54,7 @@ export default class TickTones extends Plugin {
 
   registerCurrentLeaf() {
     this.app.workspace.onLayoutReady(() => {
-      let activeLeaf = this.app.workspace.getLeaf();
+      const activeLeaf = this.app.workspace.getLeaf();
 
       if (!activeLeaf) {
         return;
