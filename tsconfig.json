@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "baseUrl": ".",
     "inlineSourceMap": true,
     "inlineSources": true,
@@ -11,6 +12,10 @@
     "importHelpers": true,
     "isolatedModules": true,
     "strictNullChecks": true,
+    "paths": {
+        "src/*": ["src/*"],
+        "tests/*": ["tests/*"]
+    },
     "lib": [
       "DOM",
       "ES5",

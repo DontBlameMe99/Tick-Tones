@@ -9,7 +9,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   {
     rules: {
-      quotes: ["error", "double"],
+      quotes: ["error", "double", { avoidEscape: true }],
       "jsx-quotes": ["error", "prefer-double"],
       indent: [
         "error",
@@ -28,6 +28,13 @@ export default tseslint.config(
           caughtErrorsIgnorePattern: "^_",
         },
       ],
+    },
+  },
+  // Ignore any for mocks/tests
+  {
+    files: ["test/**/*.ts", "__mocks__/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
   {
