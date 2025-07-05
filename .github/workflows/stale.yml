@@ -61,8 +61,5 @@ jobs:
           # Optionally ignore issues/PRs assigned to someone
           exempt-assignees: false
 
-          # Optionally ignore issues/PRs in a project board (GitHub Projects)
-          exempt-projects: false
-
           # Optionally only process open issues/PRs (default is true)
           only-labels: ''
