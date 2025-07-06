@@ -18,8 +18,12 @@ export default class TickTones extends Plugin {
       return;
     }
 
-    if (target?.type === "checkbox" && target.checked) {
-      this.soundManager.playSound(this.settings.soundSetting);
+    if (target?.type === "checkbox") {
+      if (target.checked) {
+        this.soundManager.playTickSound();
+      } else {
+        this.soundManager.playUntickSound();
+      }
     }
   };
 

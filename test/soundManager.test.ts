@@ -14,7 +14,12 @@ jest.mock("src/soundLoader", () => ({
 function createMockPlugin(settings = {}) {
   return {
     settings: {
-      soundVolume: 0.7,
+      tickSoundEnabled: true,
+      tickSound: "lorem",
+      tickSoundVolume: 0.7,
+      untickSoundEnabled: true,
+      untickSound: "ipsum",
+      untickSoundVolume: 0.5,
       ...settings,
     },
   };
@@ -60,7 +65,8 @@ describe("SoundManager", () => {
     it("warns if no sounds are loaded", async () => {
       soundManager["loadedSounds"] = {};
       const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
-      await soundManager.playSound("lorem");
+      // @ts-expect-error private
+      await soundManager["playSound"]("lorem", 0.5);
       expect(warnSpy).toHaveBeenCalledWith("No sounds found. Aborting.");
       warnSpy.mockRestore();
     });
@@ -69,7 +75,8 @@ describe("SoundManager", () => {
       const errorSpy = jest
         .spyOn(console, "error")
         .mockImplementation(() => {});
-      await soundManager.playSound("notfound");
+      // @ts-expect-error private
+      await soundManager["playSound"]("notfound", 0.5);
       expect(errorSpy).toHaveBeenCalledWith('Sound "notfound" not found.');
       errorSpy.mockRestore();
     });
@@ -83,7 +90,8 @@ describe("SoundManager", () => {
         this.volume = volume;
       });
 
-      await soundManager.playSound("lorem");
+      // @ts-expect-error private
+      await soundManager["playSound"]("lorem", 0.7);
 
       // Howl should be constructed with correct src
       expect(HowlMock).toHaveBeenCalledWith({
@@ -109,14 +117,70 @@ describe("SoundManager", () => {
       });
 
       // First play caches the Howl
-      await soundManager.playSound("lorem");
+      // @ts-expect-error private
+      await soundManager["playSound"]("lorem", 0.7);
       const cachedHowl = soundManager["soundCache"].lorem;
 
       // Play again
-      await soundManager.playSound("lorem");
+      // @ts-expect-error private
+      await soundManager["playSound"]("lorem", 0.7);
       expect(HowlMock).toHaveBeenCalledTimes(1); // Only constructed once
       expect(cachedHowl.volume).toHaveBeenCalledWith(0.7);
       expect(cachedHowl.play).toHaveBeenCalled();
+    });
+  });
+
+  describe("playTickSound", () => {
+    beforeEach(async () => {
+      mockLoadSounds.mockResolvedValue({
+        lorem: "data:audio/mp3;base64,lorem",
+        ipsum: "data:audio/wav;base64,ipsum",
+      });
+      await soundManager.init();
+    });
+
+    it("does nothing if tickSoundEnabled is false", async () => {
+      plugin.settings.tickSoundEnabled = false;
+      // @ts-expect-error private
+      const playSoundSpy = jest.spyOn(soundManager as any, "playSound");
+      await soundManager.playTickSound();
+      expect(playSoundSpy).not.toHaveBeenCalled();
+    });
+
+    it("calls playSound with tickSound and tickSoundVolume", async () => {
+      // @ts-expect-error private
+      const playSoundSpy = jest
+        .spyOn(soundManager as any, "playSound")
+        .mockResolvedValue(undefined);
+      await soundManager.playTickSound();
+      expect(playSoundSpy).toHaveBeenCalledWith("lorem", 0.7);
+    });
+  });
+
+  describe("playUntickSound", () => {
+    beforeEach(async () => {
+      mockLoadSounds.mockResolvedValue({
+        lorem: "data:audio/mp3;base64,lorem",
+        ipsum: "data:audio/wav;base64,ipsum",
+      });
+      await soundManager.init();
+    });
+
+    it("does nothing if untickSoundEnabled is false", async () => {
+      plugin.settings.untickSoundEnabled = false;
+      // @ts-expect-error private
+      const playSoundSpy = jest.spyOn(soundManager as any, "playSound");
+      await soundManager.playUntickSound();
+      expect(playSoundSpy).not.toHaveBeenCalled();
+    });
+
+    it("calls playSound with untickSound and untickSoundVolume", async () => {
+      // @ts-expect-error private
+      const playSoundSpy = jest
+        .spyOn(soundManager as any, "playSound")
+        .mockResolvedValue(undefined);
+      await soundManager.playUntickSound();
+      expect(playSoundSpy).toHaveBeenCalledWith("ipsum", 0.5);
     });
   });
 
@@ -145,8 +209,10 @@ describe("SoundManager", () => {
         ipsum: "data:audio/wav;base64,ipsum",
       });
       await soundManager.init();
-      await soundManager.playSound("lorem");
-      await soundManager.playSound("ipsum");
+      // @ts-expect-error private
+      await soundManager["playSound"]("lorem", 0.7);
+      // @ts-expect-error private
+      await soundManager["playSound"]("ipsum", 0.5);
 
       expect(Object.keys(soundManager["soundCache"]).length).toBe(2);
 

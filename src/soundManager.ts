@@ -18,32 +18,51 @@ export class SoundManager {
     this.loadedSounds = await this.soundLoader.loadSounds();
   }
 
-  /**
-   * Plays a sound by name. Loads and caches the Howl instance if needed.
-   */
-  public async playSound(chosenSound: string): Promise<void> {
+  private async playSound(sound: string, volume: number): Promise<void> {
     if (Object.keys(this.loadedSounds).length === 0) {
       console.warn("No sounds found. Aborting.");
       return;
     }
 
-    const soundData = this.loadedSounds[chosenSound];
+    const soundData = this.loadedSounds[sound];
 
     if (!soundData) {
-      console.error(`Sound "${chosenSound}" not found.`);
+      console.error(`Sound "${sound}" not found.`);
       return;
     }
 
-    let howl = this.soundCache[chosenSound];
+    let howl = this.soundCache[sound];
 
     if (!howl) {
       howl = new Howl({ src: [soundData], preload: true });
-      this.soundCache[chosenSound] = howl;
+      this.soundCache[sound] = howl;
     }
 
-    howl.volume(this.plugin.settings.soundVolume);
+    howl.volume(volume);
 
     howl.play();
+  }
+
+  public async playTickSound(): Promise<void> {
+    if (!this.plugin.settings.tickSoundEnabled) {
+      return;
+    }
+
+    this.playSound(
+      this.plugin.settings.tickSound,
+      this.plugin.settings.tickSoundVolume,
+    );
+  }
+
+  public async playUntickSound(): Promise<void> {
+    if (!this.plugin.settings.untickSoundEnabled) {
+      return;
+    }
+
+    this.playSound(
+      this.plugin.settings.untickSound,
+      this.plugin.settings.untickSoundVolume,
+    );
   }
 
   public getSounds(): string[] {

@@ -37,45 +37,124 @@ export class TickTonesSettingsTab extends PluginSettingTab {
       return;
     }
 
+    containerEl.createEl("h2", {
+      text: "Checkbox tick sounds",
+    });
+
     new Setting(containerEl)
-      .setName("Checkbox tick sound")
-      .setDesc("Select a sound to play when a checkbox is ticked.")
-      .addDropdown((dropdown) => {
-        sounds.forEach((sound) => dropdown.addOption(sound, sound));
-        dropdown.setValue(this.plugin.settings.soundSetting);
-        dropdown.onChange(async (value) => {
-          this.plugin.settings.soundSetting = value;
+      .setName("Checkbox tick sound enabled")
+      .setDesc("Toggle if a sound should be played when a checkbox is ticked.")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.settings.tickSoundEnabled);
+        toggle.onChange(async (value) => {
+          this.plugin.settings.tickSoundEnabled = value;
           this.plugin.saveSettings();
+          this.display();
         });
       });
 
+    if (this.plugin.settings.tickSoundEnabled) {
+      new Setting(containerEl)
+        .setName("Checkbox tick sound")
+        .setDesc("Select a sound to play when a checkbox is ticked.")
+        .addDropdown((dropdown) => {
+          sounds.forEach((sound) => dropdown.addOption(sound, sound));
+          dropdown.setValue(this.plugin.settings.tickSound);
+          dropdown.onChange(async (value) => {
+            this.plugin.settings.tickSound = value;
+            this.plugin.saveSettings();
+          });
+        });
+
+      new Setting(containerEl)
+        .setName("Modify tick sound volume")
+        .setDesc("Adjust the volume of the tick sound.")
+        .addSlider((slider) => {
+          slider.setLimits(0, 1, 0.05);
+          slider.setValue(this.plugin.settings.tickSoundVolume);
+          slider.onChange(async (value) => {
+            this.plugin.settings.tickSoundVolume = value;
+            this.plugin.saveSettings();
+          });
+        });
+
+      new Setting(containerEl)
+        .setName("Test tick sound")
+        .setDesc("Click to play the currently selected tick sound.")
+        .addButton((button) => {
+          button.setButtonText("Play sound");
+          button.onClick(() => {
+            const selectedSound = this.plugin.settings.tickSound;
+
+            if (!selectedSound) {
+              console.warn("No sound selected, cannot play sound.");
+              return;
+            }
+
+            this.soundManager.playTickSound();
+          });
+        });
+    }
+
+    containerEl.createEl("h2", {
+      text: "Checkbox untick sounds",
+    });
+
     new Setting(containerEl)
-      .setName("Modify tick sound volume")
-      .setDesc("Adjust the volume of the tick sound.")
-      .addSlider((slider) => {
-        slider.setLimits(0, 1, 0.05);
-        slider.setValue(this.plugin.settings.soundVolume);
-        slider.onChange(async (value) => {
-          this.plugin.settings.soundVolume = value;
+      .setName("Checkbox untick sound enabled")
+      .setDesc(
+        "Toggle if a sound should be played when a checkbox is unticked.",
+      )
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.settings.untickSoundEnabled);
+        toggle.onChange(async (value) => {
+          this.plugin.settings.untickSoundEnabled = value;
           this.plugin.saveSettings();
+          this.display();
         });
       });
 
-    new Setting(containerEl)
-      .setName("Test selected sound")
-      .setDesc("Click to play the currently selected sound.")
-      .addButton((button) => {
-        button.setButtonText("Play sound");
-        button.onClick(() => {
-          const selectedSound = this.plugin.settings.soundSetting;
-
-          if (!selectedSound) {
-            console.warn("No sound selected, cannot play sound.");
-            return;
-          }
-
-          this.soundManager.playSound(selectedSound);
+    if (this.plugin.settings.untickSoundEnabled) {
+      new Setting(containerEl)
+        .setName("Checkbox tick sound")
+        .setDesc("Select a sound to play when a checkbox is ticked.")
+        .addDropdown((dropdown) => {
+          sounds.forEach((sound) => dropdown.addOption(sound, sound));
+          dropdown.setValue(this.plugin.settings.untickSound);
+          dropdown.onChange(async (value) => {
+            this.plugin.settings.untickSound = value;
+            this.plugin.saveSettings();
+          });
         });
-      });
+
+      new Setting(containerEl)
+        .setName("Modify untick sound volume")
+        .setDesc("Adjust the volume of the untick sound.")
+        .addSlider((slider) => {
+          slider.setLimits(0, 1, 0.05);
+          slider.setValue(this.plugin.settings.untickSoundVolume);
+          slider.onChange(async (value) => {
+            this.plugin.settings.untickSoundVolume = value;
+            this.plugin.saveSettings();
+          });
+        });
+
+      new Setting(containerEl)
+        .setName("Test untick sound")
+        .setDesc("Click to play the currently selected untick sound.")
+        .addButton((button) => {
+          button.setButtonText("Play sound");
+          button.onClick(() => {
+            const selectedSound = this.plugin.settings.untickSound;
+
+            if (!selectedSound) {
+              console.warn("No sound selected, cannot play sound.");
+              return;
+            }
+
+            this.soundManager.playUntickSound();
+          });
+        });
+    }
   }
 }

@@ -14,4 +14,5 @@ export const Setting = jest.fn().mockImplementation(function (this: any) {
   this.addDropdown = jest.fn().mockReturnThis();
   this.addSlider = jest.fn().mockReturnThis();
   this.addButton = jest.fn().mockReturnThis();
+  this.addToggle = jest.fn().mockReturnThis();
 });
