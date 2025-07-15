@@ -69,6 +69,12 @@ export class SoundManager {
     return Object.keys(this.loadedSounds);
   }
 
+  public async reloadSounds(): Promise<void> {
+    return this.soundLoader.loadSounds().then((sounds) => {
+      this.loadedSounds = sounds;
+    });
+  }
+
   public unload(): void {
     Object.values(this.soundCache).forEach((howl) => {
       howl.unload();

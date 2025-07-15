@@ -52,6 +52,27 @@ describe("SoundManager", () => {
     });
   });
 
+  describe("reloadSounds", () => {
+    it("reloads sounds", async () => {
+      mockLoadSounds.mockResolvedValue({
+        lorem: "data:audio/mp3;base64,lorem",
+      });
+      await soundManager.init();
+
+      expect(mockLoadSounds).toHaveBeenCalled();
+      expect(soundManager.getSounds()).toEqual(["lorem"]);
+
+      mockLoadSounds.mockResolvedValue({
+        lorem: "data:audio/mp3;base64,lorem",
+        ipsum: "data:audio/wav;base64,ipsum",
+      });
+      await soundManager.reloadSounds();
+
+      expect(mockLoadSounds).toHaveBeenCalledTimes(2);
+      expect(soundManager.getSounds()).toEqual(["lorem", "ipsum"]);
+    });
+  });
+
   describe("playSound", () => {
     beforeEach(async () => {
       // Pre-load some sounds

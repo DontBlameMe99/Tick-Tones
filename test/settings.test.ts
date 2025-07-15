@@ -31,20 +31,19 @@ describe("TickTonesSettingsTab", () => {
     tab.display();
 
     expect(containerEl.empty).toHaveBeenCalled();
-    expect(containerEl.createEl).toHaveBeenCalledTimes(4);
-    expect(containerEl.createEl).toHaveBeenNthCalledWith(1, "p", {
-      text: "No sounds found. ",
+    expect(containerEl.createEl).toHaveBeenCalledWith("h2", {
+      text: "🎉 Welcome to Tick Tones!",
     });
-    expect(containerEl.createEl).toHaveBeenNthCalledWith(2, "p", {
-      text: "Please add some sounds to the plugin.",
+    expect(containerEl.createEl).toHaveBeenCalledWith("p", {
+      text: "Thank you for installing Tick Tones!",
     });
-    expect(containerEl.createEl).toHaveBeenNthCalledWith(3, "p", {
-      text: "You can find instructions and examples here: ",
+    expect(containerEl.createEl).toHaveBeenCalledWith("p", {
+      text: "You're just some small steps away from unlocking the plugin's full potential.",
     });
-    expect(containerEl.createEl).toHaveBeenNthCalledWith(4, "a", {
-      text: "README",
-      href: "https://github.com/DontBlameMe99/Tick-Tones",
+    expect(containerEl.createEl).toHaveBeenCalledWith("p", {
+      text: "To get started:",
     });
+    expect(containerEl.createEl).toHaveBeenCalledWith("ul");
   });
 
   it("renders tick settings when tick sounds are enabled and untick toggle when untick sounds are disabled", () => {
@@ -53,69 +52,58 @@ describe("TickTonesSettingsTab", () => {
 
     expect(containerEl.empty).toHaveBeenCalled();
 
-    // Should create headers
     expect(containerEl.createEl).toHaveBeenCalledWith("h2", {
-      text: "Checkbox tick sounds",
+      text: "Tick sound",
     });
     expect(containerEl.createEl).toHaveBeenCalledWith("h2", {
-      text: "Checkbox untick sounds",
+      text: "Untick sound",
     });
 
-    // Should create 5 Setting instances:
-    // 1 tick toggle + 3 tick settings (since enabled) + 1 untick toggle (since disabled)
-    expect((Setting as jest.Mock).mock.calls.length).toBe(5);
+    // 1 tick toggle + 3 tick settings (since enabled) + 1 untick toggle (since disabled) + 1 reload = 6
+    expect((Setting as jest.Mock).mock.calls.length).toBe(6);
 
-    // Tick sound enabled toggle
     const tickEnabledSetting = (Setting as jest.Mock).mock.instances[0];
     expect(tickEnabledSetting.setName).toHaveBeenCalledWith(
-      "Checkbox tick sound enabled",
+      "Tick sound enabled",
     );
     expect(tickEnabledSetting.addToggle).toHaveBeenCalled();
 
-    // Tick sound dropdown (rendered because tick is enabled)
     const tickDropdownSetting = (Setting as jest.Mock).mock.instances[1];
-    expect(tickDropdownSetting.setName).toHaveBeenCalledWith(
-      "Checkbox tick sound",
-    );
+    expect(tickDropdownSetting.setName).toHaveBeenCalledWith("Tick sound");
     expect(tickDropdownSetting.addDropdown).toHaveBeenCalled();
 
-    // Tick sound volume slider (rendered because tick is enabled)
     const tickSliderSetting = (Setting as jest.Mock).mock.instances[2];
-    expect(tickSliderSetting.setName).toHaveBeenCalledWith(
-      "Modify tick sound volume",
-    );
+    expect(tickSliderSetting.setName).toHaveBeenCalledWith("Tick sound volume");
     expect(tickSliderSetting.addSlider).toHaveBeenCalled();
 
-    // Tick sound test button (rendered because tick is enabled)
     const tickButtonSetting = (Setting as jest.Mock).mock.instances[3];
     expect(tickButtonSetting.setName).toHaveBeenCalledWith("Test tick sound");
     expect(tickButtonSetting.addButton).toHaveBeenCalled();
 
-    // Untick sound enabled toggle (only this is rendered since untick is disabled)
     const untickEnabledSetting = (Setting as jest.Mock).mock.instances[4];
     expect(untickEnabledSetting.setName).toHaveBeenCalledWith(
-      "Checkbox untick sound enabled",
+      "Untick sound enabled",
     );
     expect(untickEnabledSetting.addToggle).toHaveBeenCalled();
   });
 
   it("renders all settings when both tick and untick sounds are enabled", () => {
-    plugin.settings.untickSoundEnabled = true; // Enable untick sounds
+    plugin.settings.untickSoundEnabled = true;
     soundManager.getSounds.mockReturnValue(["lorem", "ipsum"]);
     tab.display();
 
-    // Should create 8 Setting instances (4 for tick, 4 for untick)
-    expect((Setting as jest.Mock).mock.calls.length).toBe(8);
+    // 4 tick + 4 untick + 1 reload = 9
+    expect((Setting as jest.Mock).mock.calls.length).toBe(9);
   });
 
   it("renders only toggles when both tick and untick sounds are disabled", () => {
-    plugin.settings.tickSoundEnabled = false; // Disable tick sounds
-    plugin.settings.untickSoundEnabled = false; // Keep untick sounds disabled
+    plugin.settings.tickSoundEnabled = false;
+    plugin.settings.untickSoundEnabled = false;
     soundManager.getSounds.mockReturnValue(["lorem", "ipsum"]);
     tab.display();
 
-    // Should create 2 Setting instances (just the two toggles)
-    expect((Setting as jest.Mock).mock.calls.length).toBe(2);
+    // Only 2 toggles + reload = 3
+    expect((Setting as jest.Mock).mock.calls.length).toBe(3);
   });
 
   it("tick sound enabled toggle onChange updates plugin setting, saves, and re-renders", async () => {
@@ -134,7 +122,7 @@ describe("TickTonesSettingsTab", () => {
     expect(mockToggle.setValue).toHaveBeenCalledWith(true);
     expect(plugin.settings.tickSoundEnabled).toBe(false);
     expect(plugin.saveSettings).toHaveBeenCalled();
-    expect(displaySpy).toHaveBeenCalledTimes(2); // Once initially, once from onChange
+    expect(displaySpy).toHaveBeenCalledTimes(2);
   });
 
   it("tick sound dropdown onChange updates plugin setting and saves", async () => {
@@ -191,7 +179,6 @@ describe("TickTonesSettingsTab", () => {
 
     expect(mockButton.setButtonText).toHaveBeenCalledWith("Play sound");
 
-    // Simulate clicking with a selected sound
     plugin.settings.tickSound = "lorem";
     mockButton.onClick.mock.calls[0][0]();
 
@@ -210,7 +197,6 @@ describe("TickTonesSettingsTab", () => {
     };
     buttonCallback(mockButton);
 
-    // Simulate clicking with no selected sound
     plugin.settings.tickSound = "";
     const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
     mockButton.onClick.mock.calls[0][0]();
@@ -235,20 +221,18 @@ describe("TickTonesSettingsTab", () => {
     };
     toggleCallback(mockToggle);
 
-    // Should start disabled (false)
     expect(mockToggle.setValue).toHaveBeenCalledWith(false);
-    // Should be enabled after onChange
     expect(plugin.settings.untickSoundEnabled).toBe(true);
     expect(plugin.saveSettings).toHaveBeenCalled();
-    expect(displaySpy).toHaveBeenCalledTimes(2); // Once initially, once from onChange
+    expect(displaySpy).toHaveBeenCalledTimes(2);
   });
 
   it("untick sound dropdown onChange updates plugin setting and saves when untick is enabled", async () => {
-    plugin.settings.untickSoundEnabled = true; // Enable untick sounds
+    plugin.settings.untickSoundEnabled = true;
     soundManager.getSounds.mockReturnValue(["lorem", "ipsum"]);
     tab.display();
 
-    const untickDropdownSetting = (Setting as jest.Mock).mock.instances[5]; // 4 tick + 1 untick toggle + 1 untick dropdown
+    const untickDropdownSetting = (Setting as jest.Mock).mock.instances[5];
     const dropdownCallback = untickDropdownSetting.addDropdown.mock.calls[0][0];
     const mockDropdown = {
       addOption: jest.fn(),
@@ -265,11 +249,11 @@ describe("TickTonesSettingsTab", () => {
   });
 
   it("untick sound volume slider onChange updates plugin setting and saves when untick is enabled", async () => {
-    plugin.settings.untickSoundEnabled = true; // Enable untick sounds
+    plugin.settings.untickSoundEnabled = true;
     soundManager.getSounds.mockReturnValue(["lorem"]);
     tab.display();
 
-    const untickSliderSetting = (Setting as jest.Mock).mock.instances[6]; // 4 tick + 1 untick toggle + 1 dropdown + 1 slider
+    const untickSliderSetting = (Setting as jest.Mock).mock.instances[6];
     const sliderCallback = untickSliderSetting.addSlider.mock.calls[0][0];
     const mockSlider = {
       setLimits: jest.fn(),
@@ -286,11 +270,11 @@ describe("TickTonesSettingsTab", () => {
   });
 
   it("untick sound test button onClick plays untick sound if sound is selected when untick is enabled", () => {
-    plugin.settings.untickSoundEnabled = true; // Enable untick sounds
+    plugin.settings.untickSoundEnabled = true;
     soundManager.getSounds.mockReturnValue(["lorem"]);
     tab.display();
 
-    const untickButtonSetting = (Setting as jest.Mock).mock.instances[7]; // 4 tick + 4 untick
+    const untickButtonSetting = (Setting as jest.Mock).mock.instances[7];
     const buttonCallback = untickButtonSetting.addButton.mock.calls[0][0];
     const mockButton = {
       setButtonText: jest.fn(),
@@ -300,7 +284,6 @@ describe("TickTonesSettingsTab", () => {
 
     expect(mockButton.setButtonText).toHaveBeenCalledWith("Play sound");
 
-    // Simulate clicking with a selected sound
     plugin.settings.untickSound = "lorem";
     mockButton.onClick.mock.calls[0][0]();
 
@@ -308,11 +291,11 @@ describe("TickTonesSettingsTab", () => {
   });
 
   it("untick sound test button onClick warns if no sound selected when untick is enabled", () => {
-    plugin.settings.untickSoundEnabled = true; // Enable untick sounds
+    plugin.settings.untickSoundEnabled = true;
     soundManager.getSounds.mockReturnValue(["lorem"]);
     tab.display();
 
-    const untickButtonSetting = (Setting as jest.Mock).mock.instances[7]; // 4 tick + 4 untick
+    const untickButtonSetting = (Setting as jest.Mock).mock.instances[7];
     const buttonCallback = untickButtonSetting.addButton.mock.calls[0][0];
     const mockButton = {
       setButtonText: jest.fn(),
@@ -320,7 +303,6 @@ describe("TickTonesSettingsTab", () => {
     };
     buttonCallback(mockButton);
 
-    // Simulate clicking with no selected sound
     plugin.settings.untickSound = "";
     const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
     mockButton.onClick.mock.calls[0][0]();

@@ -21,40 +21,57 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     const sounds = this.soundManager.getSounds();
 
     if (sounds.length === 0) {
-      this.createNoSoundsFoundMessage(containerEl);
+      this.createNoSoundsFoundSection(containerEl);
+      this.createReloadSoundsSection(containerEl);
       return;
     }
 
-    this.createCheckboxTickSoundsSettings(containerEl, sounds);
-    this.createCheckboxUntickSoundsSettings(containerEl, sounds);
+    this.createTickSoundsSection(containerEl, sounds);
+    this.createUntickSoundsSection(containerEl, sounds);
+    this.createReloadSoundsSection(containerEl);
   }
 
-  private createNoSoundsFoundMessage(containerEl: HTMLElement) {
+  private createNoSoundsFoundSection(containerEl: HTMLElement) {
+    containerEl.createEl("h2", { text: "🎉 Welcome to Tick Tones!" });
+
     containerEl.createEl("p", {
-      text: "No sounds found. ",
+      text: "Thank you for installing Tick Tones!",
     });
+
     containerEl.createEl("p", {
-      text: "Please add some sounds to the plugin.",
+      text: "You're just some small steps away from unlocking the plugin's full potential.",
     });
-    containerEl.createEl("p", {
-      text: "You can find instructions and examples here: ",
+
+    containerEl.createEl("p", { text: "To get started:" });
+
+    const getStartedList = containerEl.createEl("ul");
+
+    getStartedList.createEl("li", {
+      text: "Add your own sound files to the plugin's sounds folder.",
     });
-    containerEl.createEl("a", {
-      text: "README",
+    getStartedList.createEl("li", {
+      text: "Reload the plugin or use the Reload button below once you’ve added sounds.",
+    });
+    getStartedList.createEl("li", {
+      text: "Customize your settings and enjoy!",
+    });
+
+    const helpText = containerEl.createEl("p");
+
+    helpText.appendText("Need help? See ");
+    helpText.createEl("a", {
+      text: "the GitHub page for instructions & examples.",
       href: "https://github.com/DontBlameMe99/Tick-Tones",
     });
   }
 
-  private createCheckboxTickSoundsSettings(
-    containerEl: HTMLElement,
-    sounds: string[],
-  ) {
+  private createTickSoundsSection(containerEl: HTMLElement, sounds: string[]) {
     containerEl.createEl("h2", {
-      text: "Checkbox tick sounds",
+      text: "Tick sound",
     });
 
     new Setting(containerEl)
-      .setName("Checkbox tick sound enabled")
+      .setName("Tick sound enabled")
       .setDesc("Toggle if a sound should be played when a checkbox is ticked.")
       .addToggle((toggle) => {
         toggle.setValue(this.plugin.settings.tickSoundEnabled);
@@ -67,7 +84,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
 
     if (this.plugin.settings.tickSoundEnabled) {
       new Setting(containerEl)
-        .setName("Checkbox tick sound")
+        .setName("Tick sound")
         .setDesc("Select a sound to play when a checkbox is ticked.")
         .addDropdown((dropdown) => {
           sounds.forEach((sound) => dropdown.addOption(sound, sound));
@@ -79,8 +96,8 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         });
 
       new Setting(containerEl)
-        .setName("Modify tick sound volume")
-        .setDesc("Adjust the volume of the tick sound.")
+        .setName("Tick sound volume")
+        .setDesc("Adjust the volume of the sound when a checkbox is ticked.")
         .addSlider((slider) => {
           slider.setLimits(1, 100, 1);
           slider.setDynamicTooltip();
@@ -93,7 +110,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
 
       new Setting(containerEl)
         .setName("Test tick sound")
-        .setDesc("Click to play the currently selected tick sound.")
+        .setDesc("Click to test out your checkbox tick sound configuration.")
         .addButton((button) => {
           button.setButtonText("Play sound");
           button.onClick(() => {
@@ -110,16 +127,16 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     }
   }
 
-  private createCheckboxUntickSoundsSettings(
+  private createUntickSoundsSection(
     containerEl: HTMLElement,
     sounds: string[],
   ) {
     containerEl.createEl("h2", {
-      text: "Checkbox untick sounds",
+      text: "Untick sound",
     });
 
     new Setting(containerEl)
-      .setName("Checkbox untick sound enabled")
+      .setName("Untick sound enabled")
       .setDesc(
         "Toggle if a sound should be played when a checkbox is unticked.",
       )
@@ -134,8 +151,8 @@ export class TickTonesSettingsTab extends PluginSettingTab {
 
     if (this.plugin.settings.untickSoundEnabled) {
       new Setting(containerEl)
-        .setName("Checkbox tick sound")
-        .setDesc("Select a sound to play when a checkbox is ticked.")
+        .setName("Untick sound")
+        .setDesc("Select a sound to be played when a checkbox is unticked.")
         .addDropdown((dropdown) => {
           sounds.forEach((sound) => dropdown.addOption(sound, sound));
           dropdown.setValue(this.plugin.settings.untickSound);
@@ -146,8 +163,8 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         });
 
       new Setting(containerEl)
-        .setName("Modify untick sound volume")
-        .setDesc("Adjust the volume of the untick sound.")
+        .setName("Untick sound volume")
+        .setDesc("Adjust the volume of the sound when a checkbox is unticked.")
         .addSlider((slider) => {
           slider.setLimits(1, 100, 1);
           slider.setDynamicTooltip();
@@ -160,7 +177,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
 
       new Setting(containerEl)
         .setName("Test untick sound")
-        .setDesc("Click to play the currently selected untick sound.")
+        .setDesc("Click to test out your checkbox untick sound configuration.")
         .addButton((button) => {
           button.setButtonText("Play sound");
           button.onClick(() => {
@@ -175,5 +192,24 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           });
         });
     }
+  }
+
+  private createReloadSoundsSection(containerEl: HTMLElement) {
+    containerEl.createEl("h2", {
+      text: "Sounds",
+    });
+
+    // Reload sounds button
+    new Setting(containerEl)
+      .setName("Reload")
+      .setDesc("Click to reload the available sounds.")
+      .addButton((button) => {
+        button.setButtonText("Reload sounds");
+        button.onClick(() => {
+          this.soundManager.reloadSounds().then(() => {
+            this.display();
+          });
+        });
+      });
   }
 }
