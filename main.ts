@@ -12,9 +12,7 @@ export default class TickTones extends Plugin {
     const target = evt.target as HTMLInputElement;
 
     if (!this.soundManager) {
-      console.error(
-        "SoundManager not initialized. Unable to play the click sound.",
-      );
+      console.error("SoundManager not initialized. Aborting.");
       return;
     }
 
@@ -35,7 +33,7 @@ export default class TickTones extends Plugin {
       this.soundManager = new SoundManager(this.app, this, this.manifest.dir!);
       this.soundManager.init();
     } catch (err) {
-      console.error("Failed to load settings, using defaults.", err);
+      console.error("Failed to load settings, falling back to defaults.", err);
       this.settings = { ...DEFAULT_SETTINGS };
     }
 
