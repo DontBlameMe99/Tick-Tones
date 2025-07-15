@@ -22,12 +22,11 @@ export class TickTonesSettingsTab extends PluginSettingTab {
 
     if (sounds.length === 0) {
       this.createNoSoundsFoundSection(containerEl);
-      this.createReloadSoundsSection(containerEl);
-      return;
+    } else {
+      this.createTickSoundsSection(containerEl, sounds);
+      this.createUntickSoundsSection(containerEl, sounds);
     }
 
-    this.createTickSoundsSection(containerEl, sounds);
-    this.createUntickSoundsSection(containerEl, sounds);
     this.createReloadSoundsSection(containerEl);
   }
 
