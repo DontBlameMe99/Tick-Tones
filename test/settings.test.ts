@@ -166,12 +166,13 @@ describe("TickTonesSettingsTab", () => {
     const mockSlider = {
       setLimits: jest.fn(),
       setValue: jest.fn(),
-      onChange: jest.fn((cb) => cb(0.8)),
+      onChange: jest.fn((cb) => cb(80)),
+      setDynamicTooltip: jest.fn(),
     };
     sliderCallback(mockSlider);
 
-    expect(mockSlider.setLimits).toHaveBeenCalledWith(0, 1, 0.05);
-    expect(mockSlider.setValue).toHaveBeenCalledWith(0.5);
+    expect(mockSlider.setLimits).toHaveBeenCalledWith(1, 100, 1);
+    expect(mockSlider.setValue).toHaveBeenCalledWith(50);
     expect(plugin.settings.tickSoundVolume).toBe(0.8);
     expect(plugin.saveSettings).toHaveBeenCalled();
   });
@@ -273,12 +274,13 @@ describe("TickTonesSettingsTab", () => {
     const mockSlider = {
       setLimits: jest.fn(),
       setValue: jest.fn(),
-      onChange: jest.fn((cb) => cb(0.7)),
+      onChange: jest.fn((cb) => cb(70)),
+      setDynamicTooltip: jest.fn(),
     };
     sliderCallback(mockSlider);
 
-    expect(mockSlider.setLimits).toHaveBeenCalledWith(0, 1, 0.05);
-    expect(mockSlider.setValue).toHaveBeenCalledWith(0.3);
+    expect(mockSlider.setLimits).toHaveBeenCalledWith(1, 100, 1);
+    expect(mockSlider.setValue).toHaveBeenCalledWith(30);
     expect(plugin.settings.untickSoundVolume).toBe(0.7);
     expect(plugin.saveSettings).toHaveBeenCalled();
   });

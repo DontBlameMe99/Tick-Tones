@@ -21,22 +21,34 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     const sounds = this.soundManager.getSounds();
 
     if (sounds.length === 0) {
-      containerEl.createEl("p", {
-        text: "No sounds found. ",
-      });
-      containerEl.createEl("p", {
-        text: "Please add some sounds to the plugin.",
-      });
-      containerEl.createEl("p", {
-        text: "You can find instructions and examples here: ",
-      });
-      containerEl.createEl("a", {
-        text: "README",
-        href: "https://github.com/DontBlameMe99/Tick-Tones",
-      });
+      this.createNoSoundsFoundMessage(containerEl);
       return;
     }
 
+    this.createCheckboxTickSoundsSettings(containerEl, sounds);
+    this.createCheckboxUntickSoundsSettings(containerEl, sounds);
+  }
+
+  private createNoSoundsFoundMessage(containerEl: HTMLElement) {
+    containerEl.createEl("p", {
+      text: "No sounds found. ",
+    });
+    containerEl.createEl("p", {
+      text: "Please add some sounds to the plugin.",
+    });
+    containerEl.createEl("p", {
+      text: "You can find instructions and examples here: ",
+    });
+    containerEl.createEl("a", {
+      text: "README",
+      href: "https://github.com/DontBlameMe99/Tick-Tones",
+    });
+  }
+
+  private createCheckboxTickSoundsSettings(
+    containerEl: HTMLElement,
+    sounds: string[],
+  ) {
     containerEl.createEl("h2", {
       text: "Checkbox tick sounds",
     });
@@ -70,10 +82,11 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         .setName("Modify tick sound volume")
         .setDesc("Adjust the volume of the tick sound.")
         .addSlider((slider) => {
-          slider.setLimits(0, 1, 0.05);
-          slider.setValue(this.plugin.settings.tickSoundVolume);
+          slider.setLimits(1, 100, 1);
+          slider.setDynamicTooltip();
+          slider.setValue(this.plugin.settings.tickSoundVolume * 100);
           slider.onChange(async (value) => {
-            this.plugin.settings.tickSoundVolume = value;
+            this.plugin.settings.tickSoundVolume = value / 100;
             this.plugin.saveSettings();
           });
         });
@@ -95,7 +108,12 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           });
         });
     }
+  }
 
+  private createCheckboxUntickSoundsSettings(
+    containerEl: HTMLElement,
+    sounds: string[],
+  ) {
     containerEl.createEl("h2", {
       text: "Checkbox untick sounds",
     });
@@ -131,10 +149,11 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         .setName("Modify untick sound volume")
         .setDesc("Adjust the volume of the untick sound.")
         .addSlider((slider) => {
-          slider.setLimits(0, 1, 0.05);
-          slider.setValue(this.plugin.settings.untickSoundVolume);
+          slider.setLimits(1, 100, 1);
+          slider.setDynamicTooltip();
+          slider.setValue(this.plugin.settings.untickSoundVolume * 100);
           slider.onChange(async (value) => {
-            this.plugin.settings.untickSoundVolume = value;
+            this.plugin.settings.untickSoundVolume = value / 100;
             this.plugin.saveSettings();
           });
         });
