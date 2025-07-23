@@ -113,6 +113,6 @@ After adding new sounds, reload the plugin:
 ## Contributing
 
 Contributions are welcome!
-Feel free to open [issues](https://github.com/DontBlameMe99/Tick-Tones/issues) or [pull requests](https://github.com/DontBlameMe99/Tick-Tones/pulls).
+Feel free to open [issues](https://github.com/DontBlameMe99/Tick-Tones/issues) or [pull requests](https://github.com/DontBlameMe99/Tick-Tones/pulls), but be sure to take a look at our [code of conduct](CODE_OF_CONDUCT.md).
 
 ---
