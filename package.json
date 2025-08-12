@@ -21,7 +21,7 @@
     "builtin-modules": "3.3.0",
     "esbuild": "^0.25.8",
     "eslint": "^9.33.0",
-    "jest": "^30.0.4",
+    "jest": "^30.0.5",
     "obsidian": "^1.8.7",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
