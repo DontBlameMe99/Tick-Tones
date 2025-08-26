@@ -20,7 +20,7 @@
     "@types/node": "^24.3.0",
     "builtin-modules": "3.3.0",
     "esbuild": "^0.25.9",
-    "eslint": "^9.33.0",
+    "eslint": "^9.34.0",
     "jest": "^30.0.5",
     "obsidian": "^1.8.7",
     "ts-jest": "^29.4.1",
