@@ -26,7 +26,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 20
       - uses: pnpm/action-setup@v4
@@ -61,7 +61,7 @@ jobs:
         with:
           ref: ${{ needs.bump.outputs.version }}
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 20
       - uses: pnpm/action-setup@v4
