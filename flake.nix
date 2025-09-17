@@ -14,7 +14,7 @@
     in {
       devShell = pkgs.mkShell {
         buildInputs = with pkgs; [pnpm typescript nodejs];
-        nativeBuildInputs = [pkgs.pkg-config];
+        nativeBuildInputs = with pkgs; [pkg-config];
       };
     });
 }
