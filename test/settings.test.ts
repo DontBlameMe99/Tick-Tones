@@ -17,7 +17,7 @@ describe("TickTonesSettingsTab", () => {
       tickSoundEnabled: true,
       tickSound: "lorem",
       tickSoundVolume: 0.5,
-      untickSoundEnabled: false, // Disabled by default
+      untickSoundEnabled: false,
       untickSound: "ipsum",
       untickSoundVolume: 0.3,
     });
@@ -31,19 +31,41 @@ describe("TickTonesSettingsTab", () => {
     tab.display();
 
     expect(containerEl.empty).toHaveBeenCalled();
-    expect(containerEl.createEl).toHaveBeenCalledWith("h2", {
-      text: "🎉 Welcome to Tick Tones!",
-    });
-    expect(containerEl.createEl).toHaveBeenCalledWith("p", {
-      text: "Thank you for installing Tick Tones!",
-    });
-    expect(containerEl.createEl).toHaveBeenCalledWith("p", {
-      text: "You're just some small steps away from unlocking the plugin's full potential.",
-    });
-    expect(containerEl.createEl).toHaveBeenCalledWith("p", {
-      text: "To get started:",
-    });
-    expect(containerEl.createEl).toHaveBeenCalledWith("ul");
+    expect(
+      (Setting as jest.Mock).mock.instances[0].setName,
+    ).toHaveBeenCalledWith("🎉 Welcome to Tick Tones!");
+    expect(
+      (Setting as jest.Mock).mock.instances[0].setHeading,
+    ).toHaveBeenCalled();
+    expect(
+      (Setting as jest.Mock).mock.instances[1].setName,
+    ).toHaveBeenCalledWith("Thank you for installing Tick Tones!");
+    expect(
+      (Setting as jest.Mock).mock.instances[1].setDesc,
+    ).toHaveBeenCalledWith(
+      "You're just some small steps away from unlocking the plugin's full potential.",
+    );
+    expect(
+      (Setting as jest.Mock).mock.instances[2].setName,
+    ).toHaveBeenCalledWith("To get started");
+    expect(
+      (Setting as jest.Mock).mock.instances[2].setHeading,
+    ).toHaveBeenCalled();
+    expect(
+      (Setting as jest.Mock).mock.instances[3].setName,
+    ).toHaveBeenCalledWith("Add your own sound files");
+    expect(
+      (Setting as jest.Mock).mock.instances[4].setName,
+    ).toHaveBeenCalledWith("Reload the plugin");
+    expect(
+      (Setting as jest.Mock).mock.instances[5].setName,
+    ).toHaveBeenCalledWith("Customize your settings");
+    expect(
+      (Setting as jest.Mock).mock.instances[6].setName,
+    ).toHaveBeenCalledWith("Need help?");
+    expect(
+      (Setting as jest.Mock).mock.instances[6].addButton,
+    ).toHaveBeenCalled();
   });
 
   it("renders tick settings when tick sounds are enabled and untick toggle when untick sounds are disabled", () => {
@@ -52,39 +74,54 @@ describe("TickTonesSettingsTab", () => {
 
     expect(containerEl.empty).toHaveBeenCalled();
 
-    expect(containerEl.createEl).toHaveBeenCalledWith("h2", {
-      text: "Tick sound",
-    });
-    expect(containerEl.createEl).toHaveBeenCalledWith("h2", {
-      text: "Untick sound",
-    });
+    expect(
+      (Setting as jest.Mock).mock.instances[0].setName,
+    ).toHaveBeenCalledWith("Tick sound");
+    expect(
+      (Setting as jest.Mock).mock.instances[0].setHeading,
+    ).toHaveBeenCalled();
 
-    // 1 tick toggle + 3 tick settings (since enabled) + 1 untick toggle (since disabled) + 1 reload = 6
-    expect((Setting as jest.Mock).mock.calls.length).toBe(6);
+    expect(
+      (Setting as jest.Mock).mock.instances[1].setName,
+    ).toHaveBeenCalledWith("Tick sound enabled");
+    expect(
+      (Setting as jest.Mock).mock.instances[1].addToggle,
+    ).toHaveBeenCalled();
 
-    const tickEnabledSetting = (Setting as jest.Mock).mock.instances[0];
-    expect(tickEnabledSetting.setName).toHaveBeenCalledWith(
-      "Tick sound enabled",
-    );
-    expect(tickEnabledSetting.addToggle).toHaveBeenCalled();
+    expect(
+      (Setting as jest.Mock).mock.instances[2].setName,
+    ).toHaveBeenCalledWith("Tick sound");
+    expect(
+      (Setting as jest.Mock).mock.instances[2].addDropdown,
+    ).toHaveBeenCalled();
 
-    const tickDropdownSetting = (Setting as jest.Mock).mock.instances[1];
-    expect(tickDropdownSetting.setName).toHaveBeenCalledWith("Tick sound");
-    expect(tickDropdownSetting.addDropdown).toHaveBeenCalled();
+    expect(
+      (Setting as jest.Mock).mock.instances[3].setName,
+    ).toHaveBeenCalledWith("Tick sound volume");
+    expect(
+      (Setting as jest.Mock).mock.instances[3].addSlider,
+    ).toHaveBeenCalled();
 
-    const tickSliderSetting = (Setting as jest.Mock).mock.instances[2];
-    expect(tickSliderSetting.setName).toHaveBeenCalledWith("Tick sound volume");
-    expect(tickSliderSetting.addSlider).toHaveBeenCalled();
+    expect(
+      (Setting as jest.Mock).mock.instances[4].setName,
+    ).toHaveBeenCalledWith("Test tick sound");
+    expect(
+      (Setting as jest.Mock).mock.instances[4].addButton,
+    ).toHaveBeenCalled();
 
-    const tickButtonSetting = (Setting as jest.Mock).mock.instances[3];
-    expect(tickButtonSetting.setName).toHaveBeenCalledWith("Test tick sound");
-    expect(tickButtonSetting.addButton).toHaveBeenCalled();
+    expect(
+      (Setting as jest.Mock).mock.instances[5].setName,
+    ).toHaveBeenCalledWith("Untick sound");
+    expect(
+      (Setting as jest.Mock).mock.instances[5].setHeading,
+    ).toHaveBeenCalled();
 
-    const untickEnabledSetting = (Setting as jest.Mock).mock.instances[4];
-    expect(untickEnabledSetting.setName).toHaveBeenCalledWith(
-      "Untick sound enabled",
-    );
-    expect(untickEnabledSetting.addToggle).toHaveBeenCalled();
+    expect(
+      (Setting as jest.Mock).mock.instances[6].setName,
+    ).toHaveBeenCalledWith("Untick sound enabled");
+    expect(
+      (Setting as jest.Mock).mock.instances[6].addToggle,
+    ).toHaveBeenCalled();
   });
 
   it("renders all settings when both tick and untick sounds are enabled", () => {
@@ -92,8 +129,19 @@ describe("TickTonesSettingsTab", () => {
     soundManager.getSounds.mockReturnValue(["lorem", "ipsum"]);
     tab.display();
 
-    // 4 tick + 4 untick + 1 reload = 9
-    expect((Setting as jest.Mock).mock.calls.length).toBe(9);
+    expect(
+      (Setting as jest.Mock).mock.instances[0].setName,
+    ).toHaveBeenCalledWith("Tick sound");
+    expect(
+      (Setting as jest.Mock).mock.instances[5].setName,
+    ).toHaveBeenCalledWith("Untick sound");
+
+    const setNames = (Setting as jest.Mock).mock.instances.map(
+      (inst) => inst.setName.mock.calls[0]?.[0],
+    );
+
+    expect(setNames).toContain("Sounds");
+    expect(setNames).toContain("Reload");
   });
 
   it("renders only toggles when both tick and untick sounds are disabled", () => {
@@ -102,8 +150,24 @@ describe("TickTonesSettingsTab", () => {
     soundManager.getSounds.mockReturnValue(["lorem", "ipsum"]);
     tab.display();
 
-    // Only 2 toggles + reload = 3
-    expect((Setting as jest.Mock).mock.calls.length).toBe(3);
+    expect(
+      (Setting as jest.Mock).mock.instances[0].setName,
+    ).toHaveBeenCalledWith("Tick sound");
+    expect(
+      (Setting as jest.Mock).mock.instances[1].setName,
+    ).toHaveBeenCalledWith("Tick sound enabled");
+    expect(
+      (Setting as jest.Mock).mock.instances[2].setName,
+    ).toHaveBeenCalledWith("Untick sound");
+    expect(
+      (Setting as jest.Mock).mock.instances[3].setName,
+    ).toHaveBeenCalledWith("Untick sound enabled");
+    expect(
+      (Setting as jest.Mock).mock.instances[4].setName,
+    ).toHaveBeenCalledWith("Sounds");
+    expect(
+      (Setting as jest.Mock).mock.instances[5].setName,
+    ).toHaveBeenCalledWith("Reload");
   });
 
   it("tick sound enabled toggle onChange updates plugin setting, saves, and re-renders", async () => {
@@ -111,7 +175,7 @@ describe("TickTonesSettingsTab", () => {
     const displaySpy = jest.spyOn(tab, "display");
     tab.display();
 
-    const tickEnabledSetting = (Setting as jest.Mock).mock.instances[0];
+    const tickEnabledSetting = (Setting as jest.Mock).mock.instances[1];
     const toggleCallback = tickEnabledSetting.addToggle.mock.calls[0][0];
     const mockToggle = {
       setValue: jest.fn(),
@@ -129,7 +193,7 @@ describe("TickTonesSettingsTab", () => {
     soundManager.getSounds.mockReturnValue(["lorem", "ipsum"]);
     tab.display();
 
-    const tickDropdownSetting = (Setting as jest.Mock).mock.instances[1];
+    const tickDropdownSetting = (Setting as jest.Mock).mock.instances[2];
     const dropdownCallback = tickDropdownSetting.addDropdown.mock.calls[0][0];
     const mockDropdown = {
       addOption: jest.fn(),
@@ -149,7 +213,7 @@ describe("TickTonesSettingsTab", () => {
     soundManager.getSounds.mockReturnValue(["lorem"]);
     tab.display();
 
-    const tickSliderSetting = (Setting as jest.Mock).mock.instances[2];
+    const tickSliderSetting = (Setting as jest.Mock).mock.instances[3];
     const sliderCallback = tickSliderSetting.addSlider.mock.calls[0][0];
     const mockSlider = {
       setLimits: jest.fn(),
@@ -169,7 +233,7 @@ describe("TickTonesSettingsTab", () => {
     soundManager.getSounds.mockReturnValue(["lorem"]);
     tab.display();
 
-    const tickButtonSetting = (Setting as jest.Mock).mock.instances[3];
+    const tickButtonSetting = (Setting as jest.Mock).mock.instances[4];
     const buttonCallback = tickButtonSetting.addButton.mock.calls[0][0];
     const mockButton = {
       setButtonText: jest.fn(),
@@ -189,7 +253,7 @@ describe("TickTonesSettingsTab", () => {
     soundManager.getSounds.mockReturnValue(["lorem"]);
     tab.display();
 
-    const tickButtonSetting = (Setting as jest.Mock).mock.instances[3];
+    const tickButtonSetting = (Setting as jest.Mock).mock.instances[4];
     const buttonCallback = tickButtonSetting.addButton.mock.calls[0][0];
     const mockButton = {
       setButtonText: jest.fn(),
@@ -213,7 +277,7 @@ describe("TickTonesSettingsTab", () => {
     const displaySpy = jest.spyOn(tab, "display");
     tab.display();
 
-    const untickEnabledSetting = (Setting as jest.Mock).mock.instances[4];
+    const untickEnabledSetting = (Setting as jest.Mock).mock.instances[6];
     const toggleCallback = untickEnabledSetting.addToggle.mock.calls[0][0];
     const mockToggle = {
       setValue: jest.fn(),
@@ -232,7 +296,7 @@ describe("TickTonesSettingsTab", () => {
     soundManager.getSounds.mockReturnValue(["lorem", "ipsum"]);
     tab.display();
 
-    const untickDropdownSetting = (Setting as jest.Mock).mock.instances[5];
+    const untickDropdownSetting = (Setting as jest.Mock).mock.instances[7];
     const dropdownCallback = untickDropdownSetting.addDropdown.mock.calls[0][0];
     const mockDropdown = {
       addOption: jest.fn(),
@@ -253,7 +317,7 @@ describe("TickTonesSettingsTab", () => {
     soundManager.getSounds.mockReturnValue(["lorem"]);
     tab.display();
 
-    const untickSliderSetting = (Setting as jest.Mock).mock.instances[6];
+    const untickSliderSetting = (Setting as jest.Mock).mock.instances[8];
     const sliderCallback = untickSliderSetting.addSlider.mock.calls[0][0];
     const mockSlider = {
       setLimits: jest.fn(),
@@ -274,7 +338,7 @@ describe("TickTonesSettingsTab", () => {
     soundManager.getSounds.mockReturnValue(["lorem"]);
     tab.display();
 
-    const untickButtonSetting = (Setting as jest.Mock).mock.instances[7];
+    const untickButtonSetting = (Setting as jest.Mock).mock.instances[9];
     const buttonCallback = untickButtonSetting.addButton.mock.calls[0][0];
     const mockButton = {
       setButtonText: jest.fn(),
@@ -295,7 +359,7 @@ describe("TickTonesSettingsTab", () => {
     soundManager.getSounds.mockReturnValue(["lorem"]);
     tab.display();
 
-    const untickButtonSetting = (Setting as jest.Mock).mock.instances[7];
+    const untickButtonSetting = (Setting as jest.Mock).mock.instances[9];
     const buttonCallback = untickButtonSetting.addButton.mock.calls[0][0];
     const mockButton = {
       setButtonText: jest.fn(),
@@ -312,5 +376,20 @@ describe("TickTonesSettingsTab", () => {
     );
     expect(soundManager.playUntickSound).not.toHaveBeenCalled();
     warnSpy.mockRestore();
+  });
+
+  it("renders reload sounds section", () => {
+    soundManager.getSounds.mockReturnValue(["lorem"]);
+    tab.display();
+    const reloadHeadingSetting = (Setting as jest.Mock).mock.instances[
+      (Setting as jest.Mock).mock.instances.length - 2
+    ];
+    expect(reloadHeadingSetting.setName).toHaveBeenCalledWith("Sounds");
+    expect(reloadHeadingSetting.setHeading).toHaveBeenCalled();
+    const reloadButtonSetting = (Setting as jest.Mock).mock.instances[
+      (Setting as jest.Mock).mock.instances.length - 1
+    ];
+    expect(reloadButtonSetting.setName).toHaveBeenCalledWith("Reload");
+    expect(reloadButtonSetting.addButton).toHaveBeenCalled();
   });
 });

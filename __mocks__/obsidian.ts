@@ -11,6 +11,7 @@ export class PluginSettingTab {
 export const Setting = jest.fn().mockImplementation(function (this: any) {
   this.setName = jest.fn().mockReturnThis();
   this.setDesc = jest.fn().mockReturnThis();
+  this.setHeading = jest.fn().mockReturnThis();
   this.addDropdown = jest.fn().mockReturnThis();
   this.addSlider = jest.fn().mockImplementation((cb) => {
     const mockSlider = {

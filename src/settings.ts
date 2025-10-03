@@ -31,43 +31,41 @@ export class TickTonesSettingsTab extends PluginSettingTab {
   }
 
   private createNoSoundsFoundSection(containerEl: HTMLElement) {
-    containerEl.createEl("h2", { text: "🎉 Welcome to Tick Tones!" });
+    new Setting(containerEl).setName("🎉 Welcome to Tick Tones!").setHeading();
 
-    containerEl.createEl("p", {
-      text: "Thank you for installing Tick Tones!",
-    });
+    new Setting(containerEl)
+      .setName("Thank you for installing Tick Tones!")
+      .setDesc(
+        "You're just some small steps away from unlocking the plugin's full potential.",
+      );
 
-    containerEl.createEl("p", {
-      text: "You're just some small steps away from unlocking the plugin's full potential.",
-    });
+    new Setting(containerEl).setName("To get started").setHeading();
 
-    containerEl.createEl("p", { text: "To get started:" });
+    new Setting(containerEl)
+      .setName("Add your own sound files")
+      .setDesc("Add your own sound files to the plugin's sounds folder.");
+    new Setting(containerEl)
+      .setName("Reload the plugin")
+      .setDesc(
+        "Reload the plugin or use the Reload button below once you’ve added sounds.",
+      );
+    new Setting(containerEl)
+      .setName("Customize your settings")
+      .setDesc("Customize your settings and enjoy!");
 
-    const getStartedList = containerEl.createEl("ul");
-
-    getStartedList.createEl("li", {
-      text: "Add your own sound files to the plugin's sounds folder.",
-    });
-    getStartedList.createEl("li", {
-      text: "Reload the plugin or use the Reload button below once you’ve added sounds.",
-    });
-    getStartedList.createEl("li", {
-      text: "Customize your settings and enjoy!",
-    });
-
-    const helpText = containerEl.createEl("p");
-
-    helpText.appendText("Need help? See ");
-    helpText.createEl("a", {
-      text: "the GitHub page for instructions & examples.",
-      href: "https://github.com/DontBlameMe99/Tick-Tones",
-    });
+    new Setting(containerEl)
+      .setName("Need help?")
+      .setDesc("See the GitHub page for instructions & examples.")
+      .addButton((button) => {
+        button.setButtonText("GitHub page");
+        button.onClick(() => {
+          window.open("https://github.com/DontBlameMe99/Tick-Tones");
+        });
+      });
   }
 
   private createTickSoundsSection(containerEl: HTMLElement, sounds: string[]) {
-    containerEl.createEl("h2", {
-      text: "Tick sound",
-    });
+    new Setting(containerEl).setName("Tick sound").setHeading();
 
     new Setting(containerEl)
       .setName("Tick sound enabled")
@@ -130,9 +128,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     containerEl: HTMLElement,
     sounds: string[],
   ) {
-    containerEl.createEl("h2", {
-      text: "Untick sound",
-    });
+    new Setting(containerEl).setName("Untick sound").setHeading();
 
     new Setting(containerEl)
       .setName("Untick sound enabled")
@@ -194,11 +190,8 @@ export class TickTonesSettingsTab extends PluginSettingTab {
   }
 
   private createReloadSoundsSection(containerEl: HTMLElement) {
-    containerEl.createEl("h2", {
-      text: "Sounds",
-    });
+    new Setting(containerEl).setName("Sounds").setHeading();
 
-    // Reload sounds button
     new Setting(containerEl)
       .setName("Reload")
       .setDesc("Click to reload the available sounds.")
