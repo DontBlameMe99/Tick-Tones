@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "howler": "^2.2.4",
-    "semver": "^7.7.2",
+    "semver": "^7.7.3",
     "tslib": "^2.8.1"
   }
 }
