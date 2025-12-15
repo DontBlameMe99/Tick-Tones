@@ -1,6 +1,6 @@
 {
   "name": "tick-tones",
-  "version": "1.5.8",
+  "version": "1.5.9",
   "description": "Plays a tone when you tick a checkbox",
   "main": "main.js",
   "scripts": {
