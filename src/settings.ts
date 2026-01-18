@@ -47,7 +47,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName("Reload the plugin")
       .setDesc(
-        "Reload the plugin or use the Reload button below once you’ve added sounds.",
+        "Reload the plugin or use the Reload button below once you've added sounds.",
       );
     new Setting(containerEl)
       .setName("Customize your settings")
@@ -57,10 +57,10 @@ export class TickTonesSettingsTab extends PluginSettingTab {
       .setName("Need help?")
       .setDesc("See the GitHub page for instructions & examples.")
       .addButton((button) => {
-        button.setButtonText("GitHub page");
-        button.onClick(() => {
-          window.open("https://github.com/DontBlameMe99/Tick-Tones");
-        });
+        button.setButtonText("Open GitHub");
+        button.onClick(() =>
+          window.open("https://github.com/DontBlameMe99/Tick-Tones"),
+        );
       });
   }
 
@@ -81,16 +81,78 @@ export class TickTonesSettingsTab extends PluginSettingTab {
 
     if (this.plugin.settings.tickSoundEnabled) {
       new Setting(containerEl)
-        .setName("Tick sound")
-        .setDesc("Select a sound to play when a checkbox is ticked.")
-        .addDropdown((dropdown) => {
-          sounds.forEach((sound) => dropdown.addOption(sound, sound));
-          dropdown.setValue(this.plugin.settings.tickSound);
-          dropdown.onChange(async (value) => {
-            this.plugin.settings.tickSound = value;
+        .setName("Use random tick sound")
+        .setDesc("Play a random sound from a list when checkbox is ticked.")
+        .addToggle((toggle) => {
+          toggle.setValue(this.plugin.settings.useRandomTickSound);
+          toggle.onChange(async (value) => {
+            this.plugin.settings.useRandomTickSound = value;
             this.plugin.saveSettings();
+            this.display();
           });
         });
+
+      if (this.plugin.settings.useRandomTickSound) {
+        new Setting(containerEl)
+          .setName("Random tick sounds")
+          .setDesc(
+            "Select sounds to include in the random selection. Click a sound to add/remove it from the list.",
+          );
+
+        const soundListContainer = containerEl.createDiv("tick-sound-list");
+        soundListContainer.style.display = "flex";
+        soundListContainer.style.flexWrap = "wrap";
+        soundListContainer.style.gap = "8px";
+        soundListContainer.style.marginTop = "8px";
+        soundListContainer.style.marginBottom = "16px";
+
+        sounds.forEach((sound) => {
+          const isSelected = this.plugin.settings.tickSounds.includes(sound);
+          const button = soundListContainer.createEl("button", {
+            text: sound,
+            cls: isSelected ? "mod-cta" : "",
+          });
+          button.style.padding = "4px 12px";
+          button.style.cursor = "pointer";
+
+          button.onclick = async () => {
+            if (isSelected) {
+              this.plugin.settings.tickSounds =
+                this.plugin.settings.tickSounds.filter((s) => s !== sound);
+            } else {
+              this.plugin.settings.tickSounds.push(sound);
+            }
+            this.plugin.saveSettings();
+            this.display();
+          };
+        });
+
+        if (this.plugin.settings.tickSounds.length > 0) {
+          new Setting(containerEl)
+            .setName("Selected sounds")
+            .setDesc(
+              `${this.plugin.settings.tickSounds.length} sound(s): ${this.plugin.settings.tickSounds.join(", ")}`,
+            );
+        } else {
+          new Setting(containerEl)
+            .setName("⚠️ No sounds selected")
+            .setDesc(
+              "Click on sounds above to add them to the random selection.",
+            );
+        }
+      } else {
+        new Setting(containerEl)
+          .setName("Tick sound")
+          .setDesc("Select a sound to play when a checkbox is ticked.")
+          .addDropdown((dropdown) => {
+            sounds.forEach((sound) => dropdown.addOption(sound, sound));
+            dropdown.setValue(this.plugin.settings.tickSound);
+            dropdown.onChange(async (value) => {
+              this.plugin.settings.tickSound = value;
+              this.plugin.saveSettings();
+            });
+          });
+      }
 
       new Setting(containerEl)
         .setName("Tick sound volume")
@@ -146,16 +208,78 @@ export class TickTonesSettingsTab extends PluginSettingTab {
 
     if (this.plugin.settings.untickSoundEnabled) {
       new Setting(containerEl)
-        .setName("Untick sound")
-        .setDesc("Select a sound to be played when a checkbox is unticked.")
-        .addDropdown((dropdown) => {
-          sounds.forEach((sound) => dropdown.addOption(sound, sound));
-          dropdown.setValue(this.plugin.settings.untickSound);
-          dropdown.onChange(async (value) => {
-            this.plugin.settings.untickSound = value;
+        .setName("Use random untick sound")
+        .setDesc("Play a random sound from a list when checkbox is unticked.")
+        .addToggle((toggle) => {
+          toggle.setValue(this.plugin.settings.useRandomUntickSound);
+          toggle.onChange(async (value) => {
+            this.plugin.settings.useRandomUntickSound = value;
             this.plugin.saveSettings();
+            this.display();
           });
         });
+
+      if (this.plugin.settings.useRandomUntickSound) {
+        new Setting(containerEl)
+          .setName("Random untick sounds")
+          .setDesc(
+            "Select sounds to include in the random selection. Click a sound to add/remove it from the list.",
+          );
+
+        const soundListContainer = containerEl.createDiv("untick-sound-list");
+        soundListContainer.style.display = "flex";
+        soundListContainer.style.flexWrap = "wrap";
+        soundListContainer.style.gap = "8px";
+        soundListContainer.style.marginTop = "8px";
+        soundListContainer.style.marginBottom = "16px";
+
+        sounds.forEach((sound) => {
+          const isSelected = this.plugin.settings.untickSounds.includes(sound);
+          const button = soundListContainer.createEl("button", {
+            text: sound,
+            cls: isSelected ? "mod-cta" : "",
+          });
+          button.style.padding = "4px 12px";
+          button.style.cursor = "pointer";
+
+          button.onclick = async () => {
+            if (isSelected) {
+              this.plugin.settings.untickSounds =
+                this.plugin.settings.untickSounds.filter((s) => s !== sound);
+            } else {
+              this.plugin.settings.untickSounds.push(sound);
+            }
+            this.plugin.saveSettings();
+            this.display();
+          };
+        });
+
+        if (this.plugin.settings.untickSounds.length > 0) {
+          new Setting(containerEl)
+            .setName("Selected sounds")
+            .setDesc(
+              `${this.plugin.settings.untickSounds.length} sound(s): ${this.plugin.settings.untickSounds.join(", ")}`,
+            );
+        } else {
+          new Setting(containerEl)
+            .setName("⚠️ No sounds selected")
+            .setDesc(
+              "Click on sounds above to add them to the random selection.",
+            );
+        }
+      } else {
+        new Setting(containerEl)
+          .setName("Untick sound")
+          .setDesc("Select a sound to be played when a checkbox is unticked.")
+          .addDropdown((dropdown) => {
+            sounds.forEach((sound) => dropdown.addOption(sound, sound));
+            dropdown.setValue(this.plugin.settings.untickSound);
+            dropdown.onChange(async (value) => {
+              this.plugin.settings.untickSound = value;
+              this.plugin.saveSettings();
+            });
+          });
+      }
 
       new Setting(containerEl)
         .setName("Untick sound volume")

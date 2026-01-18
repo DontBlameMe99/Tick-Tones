@@ -1,4 +1,4 @@
-import { App } from "obsidian";
+import { App, Notice } from "obsidian";
 import { SoundLoader } from "./soundLoader";
 import { Howl } from "howler";
 import TickTones from "main";
@@ -20,7 +20,7 @@ export class SoundManager {
 
   private async playSound(sound: string, volume: number): Promise<void> {
     if (Object.keys(this.loadedSounds).length === 0) {
-      console.warn("No sounds found. Aborting.");
+      console.warn("No sounds found.  Aborting.");
       return;
     }
 
@@ -43,15 +43,40 @@ export class SoundManager {
     howl.play();
   }
 
+  private getRandomSound(sounds: string[]): string | null {
+    if (!sounds || sounds.length === 0) {
+      new Notice(
+        "No random sound available, please check your settings and select sound(s).",
+        10 * 1000,
+      );
+      console.warn("No random sound available, playing nothing.");
+      return null;
+    }
+
+    const randomIndex = Math.floor(Math.random() * sounds.length);
+    return sounds[randomIndex];
+  }
+
   public async playTickSound(): Promise<void> {
     if (!this.plugin.settings.tickSoundEnabled) {
       return;
     }
 
-    this.playSound(
-      this.plugin.settings.tickSound,
-      this.plugin.settings.tickSoundVolume,
-    );
+    if (!this.plugin.settings.useRandomTickSound) {
+      this.playSound(
+        this.plugin.settings.tickSound,
+        this.plugin.settings.tickSoundVolume,
+      );
+      return;
+    }
+
+    const randomSound = this.getRandomSound(this.plugin.settings.tickSounds);
+
+    if (!randomSound) {
+      return;
+    }
+
+    this.playSound(randomSound, this.plugin.settings.tickSoundVolume);
   }
 
   public async playUntickSound(): Promise<void> {
@@ -59,10 +84,21 @@ export class SoundManager {
       return;
     }
 
-    this.playSound(
-      this.plugin.settings.untickSound,
-      this.plugin.settings.untickSoundVolume,
-    );
+    if (!this.plugin.settings.useRandomUntickSound) {
+      this.playSound(
+        this.plugin.settings.untickSound,
+        this.plugin.settings.untickSoundVolume,
+      );
+      return;
+    }
+
+    const randomSound = this.getRandomSound(this.plugin.settings.untickSounds);
+
+    if (!randomSound) {
+      return;
+    }
+
+    this.playSound(randomSound, this.plugin.settings.untickSoundVolume);
   }
 
   public getSounds(): string[] {
