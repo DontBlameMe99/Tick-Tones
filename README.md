@@ -11,11 +11,11 @@
 
 ## Features
 
-- ✅ Plays a sound when you check or uncheck a checkbox
-- 🎵 Easily add and switch between multiple custom sounds
-- 🔊 Volume slider for fine-tuned sound control
-- 💾 Supports `.wav`, `.mp3`, `.ogg`, `.flac`, `.aac`, `.m4a`, `.opus`, and `.webm` files
-- 🗂️ Curated sound assets and easy user sound installation
+- Plays a sound when you check or uncheck a checkbox
+- Easily add and switch between multiple custom sounds
+- Volume slider for fine-tuned sound control
+- Supports `.wav`, `.mp3`, `.ogg`, `.flac`, `.aac`, `.m4a`, `.opus`, and `.webm` files
+- Curated sound assets and easy user sound installation
 
 ---
 
@@ -89,7 +89,7 @@ After adding new sounds, reload the plugin:
 
 1. Open **Settings** in Obsidian.
 2. Go to the **Community plugins** tab.
-3. Find **Tick Tones** and click the ⚙️ **Settings** icon.
+3. Find **Tick Tones** and click the **Settings** icon.
 4. Configure sound, volume, and other options as desired.
 
 ---
