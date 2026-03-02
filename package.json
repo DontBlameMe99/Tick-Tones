@@ -22,7 +22,7 @@
     "esbuild": "^0.27.3",
     "eslint": "^10.0.1",
     "jest": "^30.2.0",
-    "obsidian": "^1.12.2",
+    "obsidian": "^1.12.3",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
