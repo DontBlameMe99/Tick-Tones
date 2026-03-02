@@ -43,8 +43,8 @@ importers:
         specifier: ^30.2.0
         version: 30.2.0(@types/node@25.3.0)(ts-node@10.9.2(@types/node@25.3.0)(typescript@5.9.3))
       obsidian:
-        specifier: ^1.12.2
-        version: 1.12.2(@codemirror/state@6.5.0)(@codemirror/view@6.38.1)
+        specifier: ^1.12.3
+        version: 1.12.3(@codemirror/state@6.5.0)(@codemirror/view@6.38.1)
       ts-jest:
         specifier: ^29.4.6
         version: 29.4.6(@babel/core@7.29.0)(@jest/transform@30.2.0)(@jest/types@30.2.0)(babel-jest@30.2.0(@babel/core@7.29.0))(esbuild@0.27.3)(jest-util@30.2.0)(jest@30.2.0(@types/node@25.3.0)(ts-node@10.9.2(@types/node@25.3.0)(typescript@5.9.3)))(typescript@5.9.3)
@@ -1571,8 +1571,8 @@ packages:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
     engines: {node: '>=8'}
 
-  obsidian@1.12.2:
-    resolution: {integrity: sha512-DGAzpt6vo+sMDET/o8Zj26Bj2hbHrFsNUU8TtnzCyerO/OHksMFQnU9QEnPHVsOMstt/WnHXfC56j2r1syObWg==}
+  obsidian@1.12.3:
+    resolution: {integrity: sha512-HxWqe763dOqzXjnNiHmAJTRERN8KILBSqxDSEqbeSr7W8R8Jxezzbca+nz1LiiqXnMpM8lV2jzAezw3CZ4xNUw==}
     peerDependencies:
       '@codemirror/state': 6.5.0
       '@codemirror/view': 6.38.6
@@ -3691,7 +3691,7 @@ snapshots:
     dependencies:
       path-key: 3.1.1
 
-  obsidian@1.12.2(@codemirror/state@6.5.0)(@codemirror/view@6.38.1):
+  obsidian@1.12.3(@codemirror/state@6.5.0)(@codemirror/view@6.38.1):
     dependencies:
       '@codemirror/state': 6.5.0
       '@codemirror/view': 6.38.1
