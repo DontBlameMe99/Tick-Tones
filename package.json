@@ -27,7 +27,7 @@
     "ts-jest": "29.4.9",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2",
-    "typescript-eslint": "^8.58.1"
+    "typescript-eslint": "^8.58.2"
   },
   "dependencies": {
     "howler": "^2.2.4",
