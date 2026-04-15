@@ -6,8 +6,8 @@ import { RegisteredLeafManager } from "src/registeredLeafManager";
 
 export default class TickTones extends Plugin {
   settings: TickTonesSettings = DEFAULT_SETTINGS;
-  private soundManager: SoundManager;
-  private registeredLeafManager: RegisteredLeafManager;
+  private soundManager!: SoundManager;
+  private registeredLeafManager!: RegisteredLeafManager;
   private clickHandler = (evt: MouseEvent) => {
     const target = evt.target as HTMLInputElement;
 
