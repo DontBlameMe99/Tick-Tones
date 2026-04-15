@@ -7,9 +7,9 @@
     "dev": "node esbuild.config.mjs",
     "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
     "version-bump": "node version.mjs bump",
-    "lint": "eslint .",
-    "lint-fix": "eslint . --fix",
-    "test": "jest"
+    "lint": "bunx eslint .",
+    "lint-fix": "bunx eslint . --fix",
+    "test": "bunx --bun jest"
   },
   "keywords": [],
   "author": "DontBlameMe",
