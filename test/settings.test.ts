@@ -1,10 +1,9 @@
-import { App, Setting } from "obsidian";
+import { beforeEach, describe, expect, it, jest } from "bun:test";
+import { App, Setting, settingInstances } from "obsidian";
 import { TickTonesSettingsTab } from "../src/settings";
 import TickTones from "../main";
 import { SoundManager } from "../src/soundManager";
 import { DEFAULT_SETTINGS } from "../src/types";
-
-jest.mock("obsidian");
 
 describe("TickTonesSettingsTab", () => {
   let app: App;
@@ -15,6 +14,7 @@ describe("TickTonesSettingsTab", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    settingInstances.length = 0;
 
     app = {} as App;
     plugin = {
@@ -42,17 +42,6 @@ describe("TickTonesSettingsTab", () => {
 
     tab = new TickTonesSettingsTab(app, plugin, soundManager);
     (tab as any).containerEl = containerEl;
-
-    (Setting as jest.Mock).mockImplementation(function (this: any) {
-      this.setName = jest.fn().mockReturnThis();
-      this.setDesc = jest.fn().mockReturnThis();
-      this.setHeading = jest.fn().mockReturnThis();
-      this.addToggle = jest.fn().mockReturnThis();
-      this.addDropdown = jest.fn().mockReturnThis();
-      this.addSlider = jest.fn().mockReturnThis();
-      this.addButton = jest.fn().mockReturnThis();
-      return this;
-    });
   });
 
   describe("display", () => {
@@ -63,9 +52,9 @@ describe("TickTonesSettingsTab", () => {
       expect(containerEl.empty).toHaveBeenCalled();
       expect(Setting).toHaveBeenCalled();
 
-      expect(
-        (Setting as jest.Mock).mock.instances[0].setName,
-      ).toHaveBeenCalledWith("🎉 Welcome to Tick Tones!");
+      expect(settingInstances[0].setName).toHaveBeenCalledWith(
+        "🎉 Welcome to Tick Tones!",
+      );
     });
 
     it("renders tick settings when sounds are available", () => {
@@ -74,8 +63,7 @@ describe("TickTonesSettingsTab", () => {
 
       expect(containerEl.empty).toHaveBeenCalled();
 
-      const instances = (Setting as jest.Mock).mock.instances;
-      const tickSoundHeading = instances.find((inst: any) =>
+      const tickSoundHeading = settingInstances.find((inst: any) =>
         inst.setName.mock.calls.some((call: any) => call[0] === "Tick sound"),
       );
       expect(tickSoundHeading).toBeDefined();
@@ -89,8 +77,7 @@ describe("TickTonesSettingsTab", () => {
       const displaySpy = jest.spyOn(tab, "display");
       tab.display();
 
-      const instances = (Setting as jest.Mock).mock.instances;
-      const tickEnabledSetting = instances.find((inst: any) =>
+      const tickEnabledSetting = settingInstances.find((inst: any) =>
         inst.setName.mock.calls.some(
           (call: any) => call[0] === "Tick sound enabled",
         ),
@@ -117,8 +104,7 @@ describe("TickTonesSettingsTab", () => {
       const displaySpy = jest.spyOn(tab, "display");
       tab.display();
 
-      const instances = (Setting as jest.Mock).mock.instances;
-      const randomTickSetting = instances.find((inst: any) =>
+      const randomTickSetting = settingInstances.find((inst: any) =>
         inst.setName.mock.calls.some(
           (call: any) => call[0] === "Use random tick sound",
         ),
@@ -252,8 +238,7 @@ describe("TickTonesSettingsTab", () => {
       soundManager.getSounds = jest.fn().mockReturnValue(["lorem"]);
       tab.display();
 
-      const instances = (Setting as jest.Mock).mock.instances;
-      const reloadSetting = instances.find((inst: any) =>
+      const reloadSetting = settingInstances.find((inst: any) =>
         inst.setName.mock.calls.some((call: any) => call[0] === "Reload"),
       );
 

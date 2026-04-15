@@ -11,7 +11,7 @@
       "tests/*": ["./tests/*"]
     },
 
-    "types": ["jest", "node"],
+    "types": ["bun-types", "node"],
     "allowJs": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -23,5 +23,5 @@
     "lib": ["DOM", "ES2017"],
     "skipLibCheck": true
   },
-  "include": ["**/*.ts"]
+  "include": ["main.ts", "src/**/*.ts"]
 }

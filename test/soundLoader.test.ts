@@ -1,11 +1,5 @@
 import { SoundLoader } from "src/soundLoader";
 
-jest.mock("obsidian", () => ({
-  App: jest.fn(),
-  Vault: jest.fn(),
-  normalizePath: jest.fn((p: string) => p.replace(/\/+/g, "/")),
-}));
-
 // Helper for btoa in Node
 describe("SoundLoader", () => {
   let app: any;
