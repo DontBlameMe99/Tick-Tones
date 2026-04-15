@@ -1,3 +1,8 @@
+export const App = jest.fn();
+export const Vault = jest.fn();
+export const Notice = jest.fn();
+export const normalizePath = jest.fn((p: string) => p.replace(/\/+/g, "/"));
+
 export class PluginSettingTab {
   app: any;
   plugin: any;

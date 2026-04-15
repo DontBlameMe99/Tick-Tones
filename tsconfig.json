@@ -11,7 +11,7 @@
       "tests/*": ["./tests/*"]
     },
 
-    "types": ["jest", "node"],
+    "types": ["bun-types", "node"],
     "allowJs": true,
     "noImplicitAny": true,
     "strictNullChecks": true,

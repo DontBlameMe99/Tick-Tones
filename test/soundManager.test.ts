@@ -1,14 +1,10 @@
+import { jest, mock } from "bun:test";
 import { App } from "obsidian";
-import { SoundManager } from "../src/soundManager";
 import TickTones from "../main";
 import { DEFAULT_SETTINGS } from "../src/types";
 
-jest.mock("../src/soundLoader");
-import { SoundLoader } from "../src/soundLoader";
-
-jest.mock("obsidian", () => ({
-  App: jest.fn(),
-  Notice: jest.fn(),
+mock.module("../src/soundLoader", () => ({
+  SoundLoader: jest.fn(),
 }));
 
 const mockHowlInstance = {
@@ -17,11 +13,13 @@ const mockHowlInstance = {
   unload: jest.fn(),
 };
 
-jest.mock("howler", () => ({
+mock.module("howler", () => ({
   Howl: jest.fn(() => mockHowlInstance),
 }));
 
-import { Howl } from "howler";
+const { SoundManager } = await import("../src/soundManager");
+const { SoundLoader } = await import("../src/soundLoader");
+const { Howl } = await import("howler");
 const HowlMock = Howl as unknown as jest.Mock;
 
 describe("SoundManager", () => {

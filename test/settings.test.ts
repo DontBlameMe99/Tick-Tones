@@ -4,8 +4,6 @@ import TickTones from "../main";
 import { SoundManager } from "../src/soundManager";
 import { DEFAULT_SETTINGS } from "../src/types";
 
-jest.mock("obsidian");
-
 describe("TickTonesSettingsTab", () => {
   let app: App;
   let plugin: TickTones;
