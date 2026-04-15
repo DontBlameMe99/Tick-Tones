@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Setup Bun
+      - name: Setup bun
         uses: oven-sh/setup-bun@v2
         with:
           version: latest
