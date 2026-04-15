@@ -13,7 +13,7 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       devShell = pkgs.mkShell {
-        buildInputs = with pkgs; [pnpm typescript nodejs];
+        buildInputs = with pkgs; [bun typescript nodejs];
         nativeBuildInputs = with pkgs; [pkg-config];
       };
     });

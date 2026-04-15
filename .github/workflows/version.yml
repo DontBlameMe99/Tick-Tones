@@ -29,14 +29,14 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 20
-      - uses: pnpm/action-setup@v6
+      - uses: oven-sh/setup-bun@v2
         with:
           version: latest
       - name: Install Dependencies
-        run: pnpm install
+        run: bun install --frozen-lockfile
       - name: Create local changes
         run: |
-          pnpm run version-bump ${{ github.event.inputs.bump }}
+          bun run version-bump ${{ github.event.inputs.bump }}
           echo "version=$(node version.mjs)" >> "$GITHUB_ENV"
       - name: Commit files
         run: |
@@ -64,15 +64,15 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 20
-      - uses: pnpm/action-setup@v6
+      - uses: oven-sh/setup-bun@v2
         with:
           version: latest
       - name: Install Dependencies
-        run: pnpm install
+        run: bun install --frozen-lockfile
       - name: Build
         id: build
         run: |
-          pnpm run build
+          bun run build
           ls
 
       - name: Create Release

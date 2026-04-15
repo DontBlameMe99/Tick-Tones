@@ -18,14 +18,14 @@ jobs:
         with:
           node-version: "18.x"
 
-      - uses: pnpm/action-setup@v6
+      - uses: oven-sh/setup-bun@v2
         with:
           version: latest
 
       - name: Build plugin
         run: |
-          pnpm install
-          pnpm run build
+          bun install --frozen-lockfile
+          bun run build
 
       - name: Create release
         env:
