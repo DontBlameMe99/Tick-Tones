@@ -2,6 +2,7 @@ export const App = jest.fn();
 export const Vault = jest.fn();
 export const Notice = jest.fn();
 export const normalizePath = jest.fn((p: string) => p.replace(/\/+/g, "/"));
+export const settingInstances: any[] = [];
 
 export class PluginSettingTab {
   app: any;
@@ -13,12 +14,13 @@ export class PluginSettingTab {
   }
 }
 
-export const Setting = jest.fn().mockImplementation(function (this: any) {
-  this.setName = jest.fn().mockReturnThis();
-  this.setDesc = jest.fn().mockReturnThis();
-  this.setHeading = jest.fn().mockReturnThis();
-  this.addDropdown = jest.fn().mockReturnThis();
-  this.addSlider = jest.fn().mockImplementation((cb) => {
+export const Setting = jest.fn().mockImplementation(() => {
+  const instance: any = {};
+  instance.setName = jest.fn().mockReturnValue(instance);
+  instance.setDesc = jest.fn().mockReturnValue(instance);
+  instance.setHeading = jest.fn().mockReturnValue(instance);
+  instance.addDropdown = jest.fn().mockReturnValue(instance);
+  instance.addSlider = jest.fn().mockImplementation((cb) => {
     const mockSlider = {
       setLimits: jest.fn().mockReturnThis(),
       setValue: jest.fn().mockReturnThis(),
@@ -30,8 +32,10 @@ export const Setting = jest.fn().mockImplementation(function (this: any) {
       cb(mockSlider);
     }
 
-    return this;
+    return instance;
   });
-  this.addButton = jest.fn().mockReturnThis();
-  this.addToggle = jest.fn().mockReturnThis();
+  instance.addButton = jest.fn().mockReturnValue(instance);
+  instance.addToggle = jest.fn().mockReturnValue(instance);
+  settingInstances.push(instance);
+  return instance;
 });
