@@ -1,29 +1,27 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "baseUrl": ".",
-    "inlineSourceMap": true,
-    "inlineSources": true,
+    "target": "ES2017",
     "module": "ESNext",
-    "target": "ES6",
+    "moduleResolution": "Bundler",
+
+    "paths": {
+      "main": ["./main.ts"],
+      "__mocks__/*": ["./__mocks__/*"],
+      "src/*": ["./src/*"],
+      "tests/*": ["./tests/*"]
+    },
+
+    "types": ["jest", "node"],
     "allowJs": true,
     "noImplicitAny": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "isolatedModules": true,
     "strictNullChecks": true,
-    "paths": {
-        "src/*": ["src/*"],
-        "tests/*": ["tests/*"]
-    },
-    "lib": [
-      "DOM",
-      "ES5",
-      "ES6",
-      "ES7"
-    ]
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "lib": ["DOM", "ES2017"],
+    "skipLibCheck": true
   },
-  "include": [
-    "**/*.ts"
-  ]
+  "include": ["**/*.ts"]
 }

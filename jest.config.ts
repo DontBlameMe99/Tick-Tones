@@ -1,11 +1,17 @@
-module.exports = {
+import type { Config } from "jest";
+
+const config: Config = {
   preset: "ts-jest",
   testEnvironment: "node",
-  testMatch: ["**/test/**/*.test.ts"],
-  roots: ["<rootDir>/test"],
+  transform: {
+    "^.+\\.tsx?$": ["ts-jest", { tsconfig: "tsconfig.test.json" }],
+  },
   moduleNameMapper: {
     "^src/(.*)$": "<rootDir>/src/$1",
-    "^obsidian$": "<rootDir>/__mocks__/obsidian.ts",
+    "^tests/(.*)$": "<rootDir>/test/$1",
     "^__mocks__/(.*)$": "<rootDir>/__mocks__/$1",
+    "^main$": "<rootDir>/main.ts",
   },
 };
+
+export default config;
