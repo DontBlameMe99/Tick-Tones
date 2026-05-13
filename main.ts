@@ -18,9 +18,13 @@ export default class TickTones extends Plugin {
 
     if (target?.type === "checkbox") {
       if (target.checked) {
-        this.soundManager.playTickSound();
+        this.soundManager.playTickSound().catch((err) => {
+          console.error("Failed to play tick sound.", err);
+        });
       } else {
-        this.soundManager.playUntickSound();
+        this.soundManager.playUntickSound().catch((err) => {
+          console.error("Failed to play untick sound.", err);
+        });
       }
     }
   };
@@ -31,7 +35,9 @@ export default class TickTones extends Plugin {
     try {
       await this.loadSettings();
       this.soundManager = new SoundManager(this.app, this, this.manifest.dir!);
-      this.soundManager.init();
+      this.soundManager.init().catch((err) => {
+        console.error("Failed to initialize sound manager.", err);
+      });
     } catch (err) {
       console.error("Failed to load settings, falling back to defaults.", err);
       this.settings = { ...DEFAULT_SETTINGS };
@@ -104,6 +110,8 @@ export default class TickTones extends Plugin {
   }
 
   public saveSettings() {
-    this.saveData(this.settings);
+    this.saveData(this.settings).catch((err) => {
+      console.error("Failed to save settings.", err);
+    });
   }
 }

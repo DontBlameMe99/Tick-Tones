@@ -66,7 +66,9 @@ export class SoundManager {
       this.playSound(
         this.plugin.settings.tickSound,
         this.plugin.settings.tickSoundVolume,
-      );
+      ).catch((error) => {
+        console.error(error);
+      });
       return;
     }
 
@@ -76,7 +78,11 @@ export class SoundManager {
       return;
     }
 
-    this.playSound(randomSound, this.plugin.settings.tickSoundVolume);
+    this.playSound(randomSound, this.plugin.settings.tickSoundVolume).catch(
+      (error) => {
+        console.error(error);
+      },
+    );
   }
 
   public async playUntickSound(): Promise<void> {
@@ -88,7 +94,9 @@ export class SoundManager {
       this.playSound(
         this.plugin.settings.untickSound,
         this.plugin.settings.untickSoundVolume,
-      );
+      ).catch((error) => {
+        console.error(error);
+      });
       return;
     }
 
@@ -98,7 +106,11 @@ export class SoundManager {
       return;
     }
 
-    this.playSound(randomSound, this.plugin.settings.untickSoundVolume);
+    this.playSound(randomSound, this.plugin.settings.untickSoundVolume).catch(
+      (error) => {
+        console.error(error);
+      },
+    );
   }
 
   public getSounds(): string[] {

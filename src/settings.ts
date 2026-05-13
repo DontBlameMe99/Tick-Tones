@@ -180,7 +180,9 @@ export class TickTonesSettingsTab extends PluginSettingTab {
               return;
             }
 
-            this.soundManager.playTickSound();
+            this.soundManager.playTickSound().catch((err) => {
+              console.error("Failed to play tick sound.", err);
+            });
           });
         });
     }
@@ -307,7 +309,9 @@ export class TickTonesSettingsTab extends PluginSettingTab {
               return;
             }
 
-            this.soundManager.playUntickSound();
+            this.soundManager.playUntickSound().catch((err) => {
+              console.error("Failed to play untick sound.", err);
+            });
           });
         });
     }
@@ -322,9 +326,14 @@ export class TickTonesSettingsTab extends PluginSettingTab {
       .addButton((button) => {
         button.setButtonText("Reload sounds");
         button.onClick(() => {
-          this.soundManager.reloadSounds().then(() => {
-            this.display();
-          });
+          this.soundManager
+            .reloadSounds()
+            .then(() => {
+              this.display();
+            })
+            .catch((err) => {
+              console.error("Failed to reload sounds.", err);
+            });
         });
       });
   }
