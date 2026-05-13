@@ -85,7 +85,7 @@ describe("TickTonesSettingsTab", () => {
       const toggleCallback = tickEnabledSetting.addToggle.mock.calls[0][0];
       const mockToggle = {
         setValue: jest.fn(),
-        onChange: jest.fn((cb) => cb(false)),
+        onChange: jest.fn((cb: (arg0: boolean) => any) => cb(false)),
       };
       toggleCallback(mockToggle);
 
@@ -112,7 +112,7 @@ describe("TickTonesSettingsTab", () => {
       const toggleCallback = randomTickSetting.addToggle.mock.calls[0][0];
       const mockToggle = {
         setValue: jest.fn(),
-        onChange: jest.fn((cb) => cb(true)),
+        onChange: jest.fn((cb: (arg0: boolean) => any) => cb(true)),
       };
       toggleCallback(mockToggle);
 
@@ -132,7 +132,7 @@ describe("TickTonesSettingsTab", () => {
       plugin.settings.tickSounds = ["lorem"];
 
       const mockButtons: any[] = [];
-      const mockCreateEl = jest.fn((type, options) => {
+      const mockCreateEl = jest.fn((type: any, options: any) => {
         const button = {
           style: {},
           onclick: null,
@@ -154,11 +154,11 @@ describe("TickTonesSettingsTab", () => {
       expect(containerEl.createDiv).toHaveBeenCalledWith("tick-sound-list");
       expect(mockCreateEl).toHaveBeenCalledTimes(3);
       expect(mockButtons[0].text).toBe("lorem");
-      expect(mockButtons[0].cls).toBe("mod-cta");
+      expect(mockButtons[0].cls).toBe("tick-sound-btn mod-cta");
       expect(mockButtons[1].text).toBe("ipsum");
-      expect(mockButtons[1].cls).toBe("");
+      expect(mockButtons[1].cls).toBe("tick-sound-btn");
       expect(mockButtons[2].text).toBe("dolor");
-      expect(mockButtons[2].cls).toBe("");
+      expect(mockButtons[2].cls).toBe("tick-sound-btn");
     });
 
     it("adds sound to list when unselected button is clicked", async () => {
@@ -167,7 +167,7 @@ describe("TickTonesSettingsTab", () => {
       plugin.settings.tickSounds = [];
 
       const mockButtons: any[] = [];
-      const mockCreateEl = jest.fn((type, options) => {
+      const mockCreateEl = jest.fn((type: any, options: any) => {
         const button = {
           style: {},
           onclick: null as any,
@@ -201,7 +201,7 @@ describe("TickTonesSettingsTab", () => {
       plugin.settings.tickSounds = ["lorem", "ipsum"];
 
       const mockButtons: any[] = [];
-      const mockCreateEl = jest.fn((type, options) => {
+      const mockCreateEl = jest.fn((type: any, options: any) => {
         const button = {
           style: {},
           onclick: null as any,
@@ -244,7 +244,7 @@ describe("TickTonesSettingsTab", () => {
       const buttonCallback = reloadSetting.addButton.mock.calls[0][0];
       const mockButton = {
         setButtonText: jest.fn(),
-        onClick: jest.fn(async (cb) => await cb()),
+        onClick: jest.fn(async (cb: () => any) => await cb()),
       };
 
       await buttonCallback(mockButton);
