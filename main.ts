@@ -96,7 +96,9 @@ export default class TickTones extends Plugin {
         this.soundManager.unload();
       }
       this.saveSettings();
-    })();
+    })().catch((err) => {
+      console.error("Failed to unload plugin.", err);
+    });
   }
 
   async loadSettings() {
