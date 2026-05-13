@@ -72,7 +72,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
       .setDesc("Toggle if a sound should be played when a checkbox is ticked.")
       .addToggle((toggle) => {
         toggle.setValue(this.plugin.settings.tickSoundEnabled);
-        toggle.onChange(async (value) => {
+        toggle.onChange((value) => {
           this.plugin.settings.tickSoundEnabled = value;
           this.plugin.saveSettings();
           this.display();
@@ -85,7 +85,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         .setDesc("Play a random sound from a list when checkbox is ticked.")
         .addToggle((toggle) => {
           toggle.setValue(this.plugin.settings.useRandomTickSound);
-          toggle.onChange(async (value) => {
+          toggle.onChange((value) => {
             this.plugin.settings.useRandomTickSound = value;
             this.plugin.saveSettings();
             this.display();
@@ -147,7 +147,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           .addDropdown((dropdown) => {
             sounds.forEach((sound) => dropdown.addOption(sound, sound));
             dropdown.setValue(this.plugin.settings.tickSound);
-            dropdown.onChange(async (value) => {
+            dropdown.onChange((value) => {
               this.plugin.settings.tickSound = value;
               this.plugin.saveSettings();
             });
@@ -161,7 +161,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           slider.setLimits(1, 100, 1);
           slider.setDynamicTooltip();
           slider.setValue(this.plugin.settings.tickSoundVolume * 100);
-          slider.onChange(async (value) => {
+          slider.onChange((value) => {
             this.plugin.settings.tickSoundVolume = value / 100;
             this.plugin.saveSettings();
           });
@@ -201,7 +201,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
       )
       .addToggle((toggle) => {
         toggle.setValue(this.plugin.settings.untickSoundEnabled);
-        toggle.onChange(async (value) => {
+        toggle.onChange((value) => {
           this.plugin.settings.untickSoundEnabled = value;
           this.plugin.saveSettings();
           this.display();
@@ -214,7 +214,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         .setDesc("Play a random sound from a list when checkbox is unticked.")
         .addToggle((toggle) => {
           toggle.setValue(this.plugin.settings.useRandomUntickSound);
-          toggle.onChange(async (value) => {
+          toggle.onChange((value) => {
             this.plugin.settings.useRandomUntickSound = value;
             this.plugin.saveSettings();
             this.display();
@@ -276,7 +276,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           .addDropdown((dropdown) => {
             sounds.forEach((sound) => dropdown.addOption(sound, sound));
             dropdown.setValue(this.plugin.settings.untickSound);
-            dropdown.onChange(async (value) => {
+            dropdown.onChange((value) => {
               this.plugin.settings.untickSound = value;
               this.plugin.saveSettings();
             });
@@ -290,7 +290,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           slider.setLimits(1, 100, 1);
           slider.setDynamicTooltip();
           slider.setValue(this.plugin.settings.untickSoundVolume * 100);
-          slider.onChange(async (value) => {
+          slider.onChange((value) => {
             this.plugin.settings.untickSoundVolume = value / 100;
             this.plugin.saveSettings();
           });

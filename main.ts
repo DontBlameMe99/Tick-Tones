@@ -84,17 +84,19 @@ export default class TickTones extends Plugin {
     );
   }
 
-  async onunload() {
-    if (this.registeredLeafManager) {
-      this.registeredLeafManager.getRegisteredLeaves().forEach((leaf) => {
-        this.registeredLeafManager.unregisterLeaf(leaf);
-      });
-    }
+  onunload() {
+    (async () => {
+      if (this.registeredLeafManager) {
+        this.registeredLeafManager.getRegisteredLeaves().forEach((leaf) => {
+          this.registeredLeafManager.unregisterLeaf(leaf);
+        });
+      }
 
-    if (this.soundManager) {
-      this.soundManager.unload();
-    }
-    this.saveSettings();
+      if (this.soundManager) {
+        this.soundManager.unload();
+      }
+      this.saveSettings();
+    })();
   }
 
   async loadSettings() {
