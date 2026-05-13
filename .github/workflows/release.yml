@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      attestations: write
+      id-token: write
     steps:
       - uses: actions/checkout@v6
 
@@ -26,6 +28,13 @@ jobs:
         run: |
           bun install --frozen-lockfile
           bun run build
+
+      - name: Attest release assets
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: |
+            main.js
+            manifest.json
 
       - name: Create release
         env:
