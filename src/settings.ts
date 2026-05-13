@@ -31,10 +31,10 @@ export class TickTonesSettingsTab extends PluginSettingTab {
   }
 
   private createNoSoundsFoundSection(containerEl: HTMLElement) {
-    new Setting(containerEl).setName("🎉 Welcome to Tick Tones!").setHeading();
+    new Setting(containerEl).setName("🎉 Welcome!").setHeading();
 
     new Setting(containerEl)
-      .setName("Thank you for installing Tick Tones!")
+      .setName("Thank you for installing!")
       .setDesc(
         "You're just some small steps away from unlocking the plugin's full potential.",
       );

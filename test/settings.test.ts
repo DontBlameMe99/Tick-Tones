@@ -52,9 +52,7 @@ describe("TickTonesSettingsTab", () => {
       expect(containerEl.empty).toHaveBeenCalled();
       expect(Setting).toHaveBeenCalled();
 
-      expect(settingInstances[0].setName).toHaveBeenCalledWith(
-        "🎉 Welcome to Tick Tones!",
-      );
+      expect(settingInstances[0].setName).toHaveBeenCalledWith("🎉 Welcome!");
     });
 
     it("renders tick settings when sounds are available", () => {
