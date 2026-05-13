@@ -100,20 +100,13 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           );
 
         const soundListContainer = containerEl.createDiv("tick-sound-list");
-        soundListContainer.style.display = "flex";
-        soundListContainer.style.flexWrap = "wrap";
-        soundListContainer.style.gap = "8px";
-        soundListContainer.style.marginTop = "8px";
-        soundListContainer.style.marginBottom = "16px";
 
         sounds.forEach((sound) => {
           const isSelected = this.plugin.settings.tickSounds.includes(sound);
           const button = soundListContainer.createEl("button", {
             text: sound,
-            cls: isSelected ? "mod-cta" : "",
+            cls: "tick-sound-btn" + (isSelected ? " mod-cta" : ""),
           });
-          button.style.padding = "4px 12px";
-          button.style.cursor = "pointer";
 
           button.onclick = async () => {
             if (isSelected) {
@@ -229,11 +222,6 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           );
 
         const soundListContainer = containerEl.createDiv("untick-sound-list");
-        soundListContainer.style.display = "flex";
-        soundListContainer.style.flexWrap = "wrap";
-        soundListContainer.style.gap = "8px";
-        soundListContainer.style.marginTop = "8px";
-        soundListContainer.style.marginBottom = "16px";
 
         sounds.forEach((sound) => {
           const isSelected = this.plugin.settings.untickSounds.includes(sound);
@@ -241,8 +229,6 @@ export class TickTonesSettingsTab extends PluginSettingTab {
             text: sound,
             cls: isSelected ? "mod-cta" : "",
           });
-          button.style.padding = "4px 12px";
-          button.style.cursor = "pointer";
 
           button.onclick = async () => {
             if (isSelected) {
