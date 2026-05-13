@@ -138,7 +138,9 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           .setName("Tick sound")
           .setDesc("Select a sound to play when a checkbox is ticked.")
           .addDropdown((dropdown) => {
-            sounds.forEach((sound) => dropdown.addOption(sound, sound));
+            sounds.forEach((sound) => {
+              dropdown.addOption(sound, sound);
+            });
             dropdown.setValue(this.plugin.settings.tickSound);
             dropdown.onChange((value) => {
               this.plugin.settings.tickSound = value;
@@ -260,7 +262,9 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           .setName("Untick sound")
           .setDesc("Select a sound to be played when a checkbox is unticked.")
           .addDropdown((dropdown) => {
-            sounds.forEach((sound) => dropdown.addOption(sound, sound));
+            sounds.forEach((sound) => {
+              dropdown.addOption(sound, sound);
+            });
             dropdown.setValue(this.plugin.settings.untickSound);
             dropdown.onChange((value) => {
               this.plugin.settings.untickSound = value;
