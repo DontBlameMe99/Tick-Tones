@@ -3,10 +3,6 @@ import { App } from "obsidian";
 import TickTones from "../main";
 import { DEFAULT_SETTINGS } from "../src/types";
 
-mock.module("../src/soundLoader", () => ({
-  SoundLoader: jest.fn(),
-}));
-
 const mockHowlInstance = {
   volume: jest.fn(),
   play: jest.fn(),
@@ -27,6 +23,7 @@ describe("SoundManager", () => {
   let plugin: TickTones;
   let soundManager: SoundManager;
   let mockLoadSounds: jest.Mock;
+  let loadSoundsSpy: jest.SpyInstance;
   let consoleWarnSpy: jest.SpyInstance;
   let consoleErrorSpy: jest.SpyInstance;
 
@@ -43,9 +40,9 @@ describe("SoundManager", () => {
     } as any;
 
     mockLoadSounds = jest.fn().mockResolvedValue({});
-    (SoundLoader as jest.Mock).mockImplementation(() => ({
-      loadSounds: mockLoadSounds,
-    }));
+    loadSoundsSpy = jest
+      .spyOn(SoundLoader.prototype, "loadSounds")
+      .mockImplementation(mockLoadSounds);
 
     soundManager = new SoundManager(app, plugin, "/fake/path");
     HowlMock.mockClear();
@@ -55,6 +52,7 @@ describe("SoundManager", () => {
   });
 
   afterEach(() => {
+    loadSoundsSpy.mockRestore();
     consoleWarnSpy.mockRestore();
     consoleErrorSpy.mockRestore();
   });
