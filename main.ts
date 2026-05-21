@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { MarkdownView, Plugin } from "obsidian";
 import { SoundManager } from "src/soundManager";
 import { TickTonesSettings, DEFAULT_SETTINGS } from "src/types";
 import { TickTonesSettingsTab } from "src/settings";
@@ -16,16 +16,23 @@ export default class TickTones extends Plugin {
       return;
     }
 
-    if (target?.type === "checkbox") {
-      if (target.checked) {
-        this.soundManager.playTickSound().catch((err) => {
-          console.error("Failed to play tick sound.", err);
-        });
-      } else {
-        this.soundManager.playUntickSound().catch((err) => {
-          console.error("Failed to play untick sound.", err);
-        });
-      }
+    if (target?.type !== "checkbox") {
+      return;
+    }
+
+    // If the active view is not a MarkdownView (e.g. a sidebar or a plugin view), abort.
+    if (!this.app.workspace.getActiveViewOfType(MarkdownView)) {
+      return;
+    }
+
+    if (target.checked) {
+      this.soundManager.playTickSound().catch((err) => {
+        console.error("Failed to play tick sound.", err);
+      });
+    } else {
+      this.soundManager.playUntickSound().catch((err) => {
+        console.error("Failed to play untick sound.", err);
+      });
     }
   };
 
