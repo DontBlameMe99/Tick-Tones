@@ -1,24 +1,25 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "tick-tones",
       "dependencies": {
         "howler": "^2.2.4",
-        "semver": "^7.7.4",
+        "semver": "^7.8.0",
         "tslib": "^2.8.1",
       },
       "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@types/howler": "^2.2.12",
-        "@types/node": "^25.6.0",
-        "bun-types": "1.3.13",
+        "@types/node": "^25.7.0",
+        "bun-types": "1.3.14",
         "esbuild": "^0.28.0",
-        "eslint": "^10.2.0",
+        "eslint": "^10.3.0",
         "obsidian": "^1.12.3",
         "ts-node": "^10.9.2",
-        "typescript": "^6.0.2",
-        "typescript-eslint": "^8.58.2",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.59.3",
       },
     },
   },
@@ -169,7 +170,7 @@
 
     "brace-expansion": ["brace-expansion@5.0.5", "", { "dependencies": { "balanced-match": "4.0.4" } }, "sha512-VZznLgtwhn+Mact9tfiwx64fA9erHH/MCXEUfB/0bX/6Fz6ny5EGTXYltMocqg4xFAQZtnO3DHWWXi8RiuN7cQ=="],
 
-    "bun-types": ["bun-types@1.3.13", "", { "dependencies": { "@types/node": "*" } }, "sha512-QXKeHLlOLqQX9LgYaHJfzdBaV21T63HhFJnvuRCcjZiaUDpbs5ED1MgxbMra71CsryN/1dAoXuJJJwIv/2drVA=="],
+    "bun-types": ["bun-types@1.3.14", "", { "dependencies": { "@types/node": "*" } }, "sha512-4N0ig0fEomHt5R0KCFWjovxow98rIoRwKolrYdCcknNwMekCXRnWEUvgu5soYV8QXtVsrUD8B95MBOZGPvr6KQ=="],
 
     "create-require": ["create-require@1.1.1", "", {}, "sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ=="],
 
