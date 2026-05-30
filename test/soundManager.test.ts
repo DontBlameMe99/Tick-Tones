@@ -10,7 +10,7 @@ import {
 import { App } from "obsidian";
 import TickTones from "../main";
 import { DEFAULT_SETTINGS } from "../src/types";
-import { SoundManager } from "../src/soundManager";
+import type { SoundManager as SoundManagerType } from "../src/soundManager";
 
 const mockHowlInstance = {
   volume: jest.fn(),
@@ -22,7 +22,7 @@ mock.module("howler", () => ({
   Howl: jest.fn(() => mockHowlInstance),
 }));
 
-const { SoundManager } = await import("../src/soundManager");
+const { SoundManager: SoundManagerClass } = await import("../src/soundManager");
 const { SoundLoader } = await import("../src/soundLoader");
 const { Howl } = await import("howler");
 const HowlMock = Howl as unknown as jest.Mock;
@@ -30,17 +30,17 @@ const HowlMock = Howl as unknown as jest.Mock;
 describe("SoundManager", () => {
   let app: App;
   let plugin: TickTones;
-  let soundManager: SoundManager;
+  let soundManager: SoundManagerType;
   let mockLoadSounds: jest.Mock;
-  let loadSoundsSpy: jest.SpyInstance;
-  let consoleWarnSpy: jest.SpyInstance;
-  let consoleErrorSpy: jest.SpyInstance;
+  let loadSoundsSpy: ReturnType<typeof jest.spyOn>;
+  let consoleWarnSpy: ReturnType<typeof jest.spyOn>;
+  let consoleErrorSpy: ReturnType<typeof jest.spyOn>;
 
   beforeEach(() => {
     jest.clearAllMocks();
 
-    consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
-    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+    consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation(() => undefined);
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => undefined);
 
     app = {} as App;
     plugin = {
@@ -53,7 +53,7 @@ describe("SoundManager", () => {
       .spyOn(SoundLoader.prototype, "loadSounds")
       .mockImplementation(mockLoadSounds);
 
-    soundManager = new SoundManager(app, plugin, "/fake/path");
+    soundManager = new SoundManagerClass(app, plugin, "/fake/path");
     HowlMock.mockClear();
     mockHowlInstance.volume.mockClear();
     mockHowlInstance.play.mockClear();
@@ -90,7 +90,7 @@ describe("SoundManager", () => {
     });
 
     it("does nothing if no sounds are loaded", async () => {
-      const emptySoundManager = new SoundManager(app, plugin, "/fake/path");
+      const emptySoundManager = new SoundManagerClass(app, plugin, "/fake/path");
       mockLoadSounds.mockResolvedValue({});
       await emptySoundManager.init();
 
@@ -364,7 +364,8 @@ describe("SoundManager", () => {
     it("returns a sound from the array", () => {
       const sounds = ["lorem", "ipsum", "dolor"];
       const result = soundManager["getRandomSound"](sounds);
-      expect(sounds).toContain(result);
+      expect(result).not.toBeNull();
+      expect(sounds).toContain(result as string);
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
