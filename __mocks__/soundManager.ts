@@ -4,5 +4,5 @@ export function createMockSoundManager(sounds: string[] = []) {
     playSound: jest.fn(),
     playTickSound: jest.fn(),
     playUntickSound: jest.fn(),
-  };
+  }
 }

@@ -1,1 +1,1 @@
-export const Howl = jest.fn();
+export const Howl = jest.fn()

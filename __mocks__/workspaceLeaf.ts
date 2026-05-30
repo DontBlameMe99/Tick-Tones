@@ -1,4 +1,4 @@
-import type { WorkspaceLeaf } from "obsidian";
+import type { WorkspaceLeaf } from 'obsidian'
 
 export function createMockLeaf(): WorkspaceLeaf {
   return {
@@ -8,5 +8,5 @@ export function createMockLeaf(): WorkspaceLeaf {
         removeEventListener: jest.fn(),
       },
     },
-  } as unknown as WorkspaceLeaf;
+  } as unknown as WorkspaceLeaf
 }

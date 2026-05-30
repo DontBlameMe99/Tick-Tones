@@ -1,5 +1,5 @@
-import { jest, mock } from "bun:test";
+import { jest, mock } from 'bun:test'
 
-globalThis.jest = jest;
+globalThis.jest = jest
 
-mock.module("obsidian", () => import("../__mocks__/obsidian"));
+mock.module('obsidian', () => import('../__mocks__/obsidian'))
