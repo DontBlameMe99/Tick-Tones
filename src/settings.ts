@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, type Setting } from 'obsidian'
+import { App, PluginSettingTab, type Setting, type SettingDefinitionItem } from 'obsidian'
 import TickTonesSounds from '../main'
 import { SoundManager } from './soundManager'
 import type { TickTonesSettings } from './types'
@@ -9,6 +9,8 @@ const CONTROL_UPDATE_KEYS = new Set([
   'untickSoundEnabled',
   'useRandomUntickSound',
 ])
+
+type TickTonesSettingKey = keyof TickTonesSettings
 
 export class TickTonesSettingsTab extends PluginSettingTab {
   private soundManager: SoundManager
@@ -22,7 +24,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     this.soundManager = soundManager
   }
 
-  public getSettingDefinitions() {
+  public getSettingDefinitions(): SettingDefinitionItem<TickTonesSettingKey>[] {
     const sounds = this.soundManager.getSounds()
     const hasSounds = sounds.length > 0
     const soundOptions = this.buildSoundOptions(sounds)
@@ -331,7 +333,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     if (key === 'untickSoundVolume') {
       return Math.round(this.plugin.settings.untickSoundVolume * 100)
     }
-    return this.plugin.settings[key as keyof TickTonesSettings]
+    return this.plugin.settings[key as TickTonesSettingKey]
   }
 
   public setControlValue(key: string, value: unknown): void {
@@ -340,8 +342,11 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     } else if (key === 'untickSoundVolume') {
       this.plugin.settings.untickSoundVolume = Number(value) / 100
     } else {
-      this.plugin.settings[key as keyof TickTonesSettings] =
-        value as TickTonesSettings[keyof TickTonesSettings]
+      const settings = this.plugin.settings as Record<
+        TickTonesSettingKey,
+        TickTonesSettings[TickTonesSettingKey]
+      >
+      settings[key as TickTonesSettingKey] = value as TickTonesSettings[TickTonesSettingKey]
     }
 
     this.plugin.saveSettings()
