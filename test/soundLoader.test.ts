@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from 'bun:test'
 import { SoundLoader } from 'src/soundLoader'
 
 // Helper for btoa in Node
