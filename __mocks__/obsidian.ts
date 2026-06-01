@@ -8,6 +8,8 @@ export class PluginSettingTab {
   app: any
   plugin: any
   containerEl: any = {}
+  update = jest.fn()
+  refreshDomState = jest.fn()
   constructor(app: any, plugin: any) {
     this.app = app
     this.plugin = plugin

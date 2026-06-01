@@ -9,7 +9,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   {
     rules: {
-      quotes: ['error', 'double', { avoidEscape: true }],
+      quotes: ['error', 'single', { avoidEscape: true }],
       'jsx-quotes': ['error', 'prefer-double'],
       indent: [
         'error',
