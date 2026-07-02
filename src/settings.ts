@@ -2,6 +2,8 @@ import { mkdirSync } from 'fs'
 import {
   type App,
   FileSystemAdapter,
+  Notice,
+  normalizePath,
   PluginSettingTab,
   type Setting,
   type SettingDefinitionItem,
@@ -10,6 +12,17 @@ import { join } from 'path'
 import type TickTonesSounds from '../main'
 import type { SoundManager } from './soundManager'
 import type { TickTonesSettings } from './types'
+
+const SAMPLE_SOUNDS: Array<{ name: string; url: string }> = [
+  {
+    name: 'Microsoft_ToDo.wav',
+    url: 'https://raw.githubusercontent.com/DontBlameMe99/Tick-Tones/master/assets/Microsoft_ToDo.wav',
+  },
+  {
+    name: 'Task_Completed.wav',
+    url: 'https://raw.githubusercontent.com/DontBlameMe99/Tick-Tones/master/assets/Task_Completed.wav',
+  },
+]
 
 const CONTROL_UPDATE_KEYS = new Set([
   'tickSoundEnabled',
@@ -43,6 +56,35 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     }
   }
 
+  private async downloadSampleSounds(): Promise<void> {
+    const adapter = this.plugin.app.vault.adapter
+    const assetsPath = normalizePath(`${this.plugin.manifest.dir}/assets`)
+
+    try {
+      await adapter.mkdir(assetsPath)
+    } catch {
+      // folder already exists
+    }
+
+    let downloaded = 0
+    for (const sound of SAMPLE_SOUNDS) {
+      try {
+        const response = await fetch(sound.url)
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        const buffer = await response.arrayBuffer()
+        const filePath = normalizePath(`${assetsPath}/${sound.name}`)
+        await adapter.writeBinary(filePath, buffer)
+        downloaded++
+      } catch (err) {
+        console.error(`Failed to download sample sound: ${sound.name}`, err)
+        new Notice(`Failed to download ${sound.name}`)
+        return
+      }
+    }
+
+    new Notice(`Downloaded ${downloaded} sample sound${downloaded === 1 ? '' : 's'}.`)
+  }
+
   public getSettingDefinitions(): SettingDefinitionItem<TickTonesSettingKey>[] {
     const sounds = this.soundManager.getSounds()
     const hasSounds = sounds.length > 0
@@ -56,6 +98,23 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         items: [
           {
             name: 'Drop your audio files into the plugin sounds folder, then reload below.',
+          },
+          {
+            name: '',
+            render: (setting) => {
+              setting.setName('Download sample sounds')
+              setting.setDesc('Get started with pre-made sounds.')
+              setting.addButton((button) => {
+                button
+                  .setIcon('download')
+                  .setTooltip('Download sample sounds')
+                  .onClick(async () => {
+                    await this.downloadSampleSounds()
+                    await this.soundManager.reloadSounds()
+                    this.update()
+                  })
+              })
+            },
           },
           {
             name: 'New to Tick Tones?',
@@ -151,6 +210,8 @@ export class TickTonesSettingsTab extends PluginSettingTab {
             name: '',
             visible: () => this.plugin.settings.tickSoundEnabled,
             render: (setting) => {
+              setting.setName('Preview')
+              setting.setDesc('Play the current tick sound to test it.')
               setting.addButton((button) => {
                 button.setIcon('play').setTooltip('Play tick sound')
                 button.onClick(() => {
@@ -249,6 +310,8 @@ export class TickTonesSettingsTab extends PluginSettingTab {
             name: '',
             visible: () => this.plugin.settings.untickSoundEnabled,
             render: (setting) => {
+              setting.setName('Preview')
+              setting.setDesc('Play the current untick sound to test it.')
               setting.addButton((button) => {
                 button.setIcon('play').setTooltip('Play untick sound')
                 button.onClick(() => {

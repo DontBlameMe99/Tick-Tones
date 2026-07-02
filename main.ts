@@ -1,4 +1,5 @@
 import { Plugin } from 'obsidian'
+import { handleCheckboxMutation } from 'src/mutationHandler'
 import { TickTonesSettingsTab } from 'src/settings'
 import { SoundManager } from 'src/soundManager'
 import { DEFAULT_SETTINGS, type TickTonesSettings } from 'src/types'
@@ -18,24 +19,15 @@ export default class TickTones extends Plugin {
     this.addSettingTab(this.settingsTab)
 
     const observer = new MutationObserver((mutations) => {
-      const processed = new Set<Element>()
-      for (const mutation of mutations) {
-        if (mutation.type !== 'attributes') continue
-        const el = mutation.target as HTMLElement
-
-        const checkbox: HTMLInputElement | null = el.classList.contains('task-list-item-checkbox')
-          ? (el as HTMLInputElement)
-          : el.querySelector('.task-list-item-checkbox')
-
-        if (!checkbox || processed.has(checkbox)) continue
-        processed.add(checkbox)
-
-        if (checkbox.checked && mutation.oldValue !== 'x') {
+      handleCheckboxMutation(
+        mutations,
+        () => {
           this.soundManager.playTickSound()
-        } else if (!checkbox.checked && mutation.oldValue === 'x') {
+        },
+        () => {
           this.soundManager.playUntickSound()
         }
-      }
+      )
     })
 
     observer.observe(document.body, {
