@@ -1,107 +1,55 @@
-import { MarkdownView, Plugin } from 'obsidian'
-import { SoundManager } from 'src/soundManager'
-import { TickTonesSettings, DEFAULT_SETTINGS } from 'src/types'
+import { Plugin } from 'obsidian'
 import { TickTonesSettingsTab } from 'src/settings'
-import { RegisteredLeafManager } from 'src/registeredLeafManager'
+import { SoundManager } from 'src/soundManager'
+import { DEFAULT_SETTINGS, type TickTonesSettings } from 'src/types'
 
 export default class TickTones extends Plugin {
   settings: TickTonesSettings = DEFAULT_SETTINGS
   private soundManager!: SoundManager
-  private registeredLeafManager!: RegisteredLeafManager
-  private clickHandler = (evt: MouseEvent) => {
-    const target = evt.target as HTMLInputElement
-
-    if (!this.soundManager) {
-      console.error('SoundManager not initialized. Aborting.')
-      return
-    }
-
-    if (target?.type !== 'checkbox') {
-      return
-    }
-
-    // If the active view is not a MarkdownView (e.g. a sidebar or a plugin view), abort.
-    if (!this.app.workspace.getActiveViewOfType(MarkdownView)) {
-      return
-    }
-
-    if (target.checked) {
-      this.soundManager.playTickSound().catch((err) => {
-        console.error('Failed to play tick sound.', err)
-      })
-    } else {
-      this.soundManager.playUntickSound().catch((err) => {
-        console.error('Failed to play untick sound.', err)
-      })
-    }
-  }
+  private settingsTab!: TickTonesSettingsTab
 
   async onload() {
-    this.registeredLeafManager = new RegisteredLeafManager(this.clickHandler)
+    await this.loadSettings()
 
-    try {
-      await this.loadSettings()
-      this.soundManager = new SoundManager(this.app, this, this.manifest.dir!)
-      this.soundManager.init().catch((err) => {
-        console.error('Failed to initialize sound manager.', err)
-      })
-    } catch (err) {
-      console.error('Failed to load settings, falling back to defaults.', err)
-      this.settings = { ...DEFAULT_SETTINGS }
-    }
+    this.soundManager = new SoundManager(this.app, this, this.manifest.dir!)
+    await this.soundManager.init()
 
-    if (!this.soundManager) {
-      console.error('SoundManager not initialized. Aborting.')
-      return
-    }
+    this.settingsTab = new TickTonesSettingsTab(this.app, this, this.soundManager)
+    this.addSettingTab(this.settingsTab)
 
-    this.registerCurrentLeaf()
-    this.registerFutureLeaves()
+    const observer = new MutationObserver((mutations) => {
+      const processed = new Set<Element>()
+      for (const mutation of mutations) {
+        if (mutation.type !== 'attributes') continue
+        const el = mutation.target as HTMLElement
 
-    const tickTonesSettingsTab = new TickTonesSettingsTab(this.app, this, this.soundManager)
+        const checkbox: HTMLInputElement | null = el.classList.contains('task-list-item-checkbox')
+          ? (el as HTMLInputElement)
+          : el.querySelector('.task-list-item-checkbox')
 
-    this.addSettingTab(tickTonesSettingsTab)
-  }
+        if (!checkbox || processed.has(checkbox)) continue
+        processed.add(checkbox)
 
-  registerCurrentLeaf() {
-    this.app.workspace.onLayoutReady(() => {
-      const activeLeaf = this.app.workspace.getMostRecentLeaf()
-
-      if (!activeLeaf) {
-        return
-      }
-
-      this.registeredLeafManager.registerLeaf(activeLeaf)
-    })
-  }
-
-  registerFutureLeaves() {
-    this.registerEvent(
-      this.app.workspace.on('active-leaf-change', (leaf) => {
-        if (!leaf) {
-          return
+        if (checkbox.checked && mutation.oldValue !== 'x') {
+          this.soundManager.playTickSound()
+        } else if (!checkbox.checked && mutation.oldValue === 'x') {
+          this.soundManager.playUntickSound()
         }
+      }
+    })
 
-        this.registeredLeafManager.registerLeaf(leaf)
-      })
-    )
+    observer.observe(document.body, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['data-task'],
+      attributeOldValue: true,
+    })
+
+    this.register(() => observer.disconnect())
   }
 
   onunload() {
-    ;(async () => {
-      if (this.registeredLeafManager) {
-        this.registeredLeafManager.getRegisteredLeaves().forEach((leaf) => {
-          this.registeredLeafManager.unregisterLeaf(leaf)
-        })
-      }
-
-      if (this.soundManager) {
-        this.soundManager.unload()
-      }
-      this.saveSettings()
-    })().catch((err) => {
-      console.error('Failed to unload plugin.', err)
-    })
+    this.soundManager?.unload()
   }
 
   async loadSettings() {
@@ -112,7 +60,7 @@ export default class TickTones extends Plugin {
     }
   }
 
-  public saveSettings() {
+  saveSettings() {
     this.saveData(this.settings).catch((err) => {
       console.error('Failed to save settings.', err)
     })
