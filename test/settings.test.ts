@@ -213,6 +213,128 @@ describe('TickTonesSettingsTab', () => {
     expect(tab.update as jest.Mock).toHaveBeenCalled()
   })
 
+  describe('untick sounds list', () => {
+    beforeEach(() => {
+      soundManager.getSounds = jest.fn().mockReturnValue(['lorem', 'ipsum', 'dolor'])
+      plugin.settings.untickSoundEnabled = true
+      plugin.settings.useRandomUntickSound = true
+    })
+
+    it('renders random untick sounds list with button classes', () => {
+      plugin.settings.untickSounds = ['lorem']
+
+      const definitions = tab.getSettingDefinitions()
+      const untickGroup = getGroup(definitions, 'Untick sound')
+      const untickSounds = untickGroup.items.find((i: any) => i.name === 'Sounds')
+
+      const mockButtons: any[] = []
+      const mockCreateEl = jest.fn((type: string, options: any) => {
+        const button = {
+          type,
+          onclick: null as null | (() => void),
+          addClass: jest.fn(),
+          removeClass: jest.fn(),
+          ...options,
+        }
+        mockButtons.push(button)
+        return button
+      })
+      const mockDiv = { createEl: mockCreateEl }
+      const mockControlEl = {
+        empty: jest.fn(),
+        createDiv: jest.fn().mockReturnValue(mockDiv),
+      }
+      const mockSetting = {
+        setName: jest.fn().mockReturnThis(),
+        setDesc: jest.fn().mockReturnThis(),
+        controlEl: mockControlEl,
+      }
+
+      untickSounds.render(mockSetting, {} as any)
+
+      expect(mockControlEl.createDiv).toHaveBeenCalledWith('untick-sound-list')
+      expect(mockButtons).toHaveLength(3)
+      expect(mockButtons[0].cls).toBe('mod-cta')
+      expect(mockButtons[1].cls).toBe('')
+    })
+
+    it('adds a sound when an unselected untick random button is clicked', () => {
+      plugin.settings.untickSounds = []
+
+      const definitions = tab.getSettingDefinitions()
+      const untickGroup = getGroup(definitions, 'Untick sound')
+      const untickSounds = untickGroup.items.find((i: any) => i.name === 'Sounds')
+
+      const mockButtons: any[] = []
+      const mockCreateEl = jest.fn((type: string, options: any) => {
+        const button = {
+          type,
+          onclick: null as null | (() => void),
+          addClass: jest.fn(),
+          removeClass: jest.fn(),
+          ...options,
+        }
+        mockButtons.push(button)
+        return button
+      })
+      const mockDiv = { createEl: mockCreateEl }
+      const mockControlEl = {
+        empty: jest.fn(),
+        createDiv: jest.fn().mockReturnValue(mockDiv),
+      }
+      const mockSetting = {
+        setName: jest.fn().mockReturnThis(),
+        setDesc: jest.fn().mockReturnThis(),
+        controlEl: mockControlEl,
+      }
+
+      untickSounds.render(mockSetting, {} as any)
+      mockButtons[0].onclick?.()
+
+      expect(plugin.settings.untickSounds).toContain('lorem')
+      expect(plugin.saveSettings).toHaveBeenCalled()
+      expect(mockButtons[0].addClass).toHaveBeenCalledWith('mod-cta')
+    })
+
+    it('removes a sound when a selected untick random button is clicked', () => {
+      plugin.settings.untickSounds = ['lorem']
+
+      const definitions = tab.getSettingDefinitions()
+      const untickGroup = getGroup(definitions, 'Untick sound')
+      const untickSounds = untickGroup.items.find((i: any) => i.name === 'Sounds')
+
+      const mockButtons: any[] = []
+      const mockCreateEl = jest.fn((type: string, options: any) => {
+        const button = {
+          type,
+          onclick: null as null | (() => void),
+          addClass: jest.fn(),
+          removeClass: jest.fn(),
+          ...options,
+        }
+        mockButtons.push(button)
+        return button
+      })
+      const mockDiv = { createEl: mockCreateEl }
+      const mockControlEl = {
+        empty: jest.fn(),
+        createDiv: jest.fn().mockReturnValue(mockDiv),
+      }
+      const mockSetting = {
+        setName: jest.fn().mockReturnThis(),
+        setDesc: jest.fn().mockReturnThis(),
+        controlEl: mockControlEl,
+      }
+
+      untickSounds.render(mockSetting, {} as any)
+      mockButtons[0].onclick?.()
+
+      expect(plugin.settings.untickSounds).not.toContain('lorem')
+      expect(plugin.saveSettings).toHaveBeenCalled()
+      expect(mockButtons[0].removeClass).toHaveBeenCalledWith('mod-cta')
+    })
+  })
+
   describe('downloadSampleSounds', () => {
     let mockAdapter: { mkdir: jest.Mock; writeBinary: jest.Mock }
 
