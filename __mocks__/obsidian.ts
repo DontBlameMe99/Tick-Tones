@@ -1,6 +1,7 @@
 export const App = jest.fn()
 export const Vault = jest.fn()
 export const Notice = jest.fn()
+export const FileSystemAdapter = jest.fn()
 export const normalizePath = jest.fn((p: string) => p.replace(/\/+/g, '/'))
 export const settingInstances: any[] = []
 

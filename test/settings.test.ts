@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, jest } from 'bun:test'
 import type { App } from 'obsidian'
+import type TickTones from '../main'
 import { TickTonesSettingsTab } from '../src/settings'
-import TickTones from '../main'
-import { SoundManager } from '../src/soundManager'
+import type { SoundManager } from '../src/soundManager'
 import { DEFAULT_SETTINGS } from '../src/types'
 
 const getGroup = (definitions: any[], heading: string) =>
@@ -180,6 +180,8 @@ describe('TickTonesSettingsTab', () => {
 
     const mockButton: any = {
       setButtonText: jest.fn(),
+      setIcon: jest.fn().mockReturnThis(),
+      setTooltip: jest.fn().mockReturnThis(),
       onClick: jest.fn((cb: () => Promise<void>) => {
         mockButton.click = cb
       }),
@@ -198,6 +200,8 @@ describe('TickTonesSettingsTab', () => {
     await mockButton.click()
 
     expect(mockButton.setButtonText).toHaveBeenCalledWith('Reload sounds')
+    expect(mockButton.setIcon).toHaveBeenCalledWith('folder-open')
+    expect(mockButton.setTooltip).toHaveBeenCalledWith('Open sounds folder')
     expect(soundManager.reloadSounds).toHaveBeenCalled()
     expect(tab.update as jest.Mock).toHaveBeenCalled()
   })

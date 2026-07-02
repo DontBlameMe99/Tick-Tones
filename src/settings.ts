@@ -1,6 +1,14 @@
-import { App, PluginSettingTab, type Setting, type SettingDefinitionItem } from 'obsidian'
-import TickTonesSounds from '../main'
-import { SoundManager } from './soundManager'
+import { mkdirSync } from 'fs'
+import {
+  type App,
+  FileSystemAdapter,
+  PluginSettingTab,
+  type Setting,
+  type SettingDefinitionItem,
+} from 'obsidian'
+import { join } from 'path'
+import type TickTonesSounds from '../main'
+import type { SoundManager } from './soundManager'
 import type { TickTonesSettings } from './types'
 
 const CONTROL_UPDATE_KEYS = new Set([
@@ -22,6 +30,17 @@ export class TickTonesSettingsTab extends PluginSettingTab {
   ) {
     super(app, plugin)
     this.soundManager = soundManager
+  }
+
+  private openSoundsFolder(): void {
+    const adapter = this.plugin.app.vault.adapter
+    if (adapter instanceof FileSystemAdapter) {
+      const assetsPath = join(adapter.getBasePath(), this.plugin.manifest.dir!, 'assets')
+      mkdirSync(assetsPath, { recursive: true })
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { shell } = require('electron')
+      shell.openPath(assetsPath)
+    }
   }
 
   public getSettingDefinitions(): SettingDefinitionItem<TickTonesSettingKey>[] {
@@ -92,8 +111,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           },
           {
             name: 'Random tick sounds',
-            desc:
-              'Select sounds to include in the random selection. Click a sound to add/remove it from the list.',
+            desc: 'Select sounds to include in the random selection. Click a sound to add/remove it from the list.',
             visible: () =>
               this.plugin.settings.tickSoundEnabled && this.plugin.settings.useRandomTickSound,
             render: (setting) => {
@@ -204,8 +222,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
           },
           {
             name: 'Random untick sounds',
-            desc:
-              'Select sounds to include in the random selection. Click a sound to add/remove it from the list.',
+            desc: 'Select sounds to include in the random selection. Click a sound to add/remove it from the list.',
             visible: () =>
               this.plugin.settings.untickSoundEnabled && this.plugin.settings.useRandomUntickSound,
             render: (setting) => {
@@ -308,6 +325,10 @@ export class TickTonesSettingsTab extends PluginSettingTab {
             render: (setting) => {
               setting.setName('Reload')
               setting.setDesc('Click to reload the available sounds.')
+              setting.addButton((button) => {
+                button.setIcon('folder-open').setTooltip('Open sounds folder')
+                button.onClick(() => this.openSoundsFolder())
+              })
               setting.addButton((button) => {
                 button.setButtonText('Reload sounds')
                 button.onClick(async () => {
