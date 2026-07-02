@@ -53,13 +53,16 @@ describe('TickTonesSettingsTab', () => {
 
   it('returns the welcome groups when no sounds are available', () => {
     const definitions = tab.getSettingDefinitions()
-    const welcomeGroup = getGroup(definitions, '🎉 Welcome!')
+    const welcomeGroup = getGroup(definitions, 'Get started')
 
     expect(welcomeGroup).toBeDefined()
     expect(isVisible(welcomeGroup.visible)).toBe(true)
-    expect(welcomeGroup.items.some((item: any) => item.name === 'Thank you for installing!')).toBe(
-      true
-    )
+    expect(
+      welcomeGroup.items.some(
+        (item: any) =>
+          item.name === 'Drop your audio files into the plugin sounds folder, then reload below.'
+      )
+    ).toBe(true)
 
     const tickGroup = getGroup(definitions, 'Tick sound')
     expect(isVisible(tickGroup.visible)).toBe(false)
@@ -73,7 +76,7 @@ describe('TickTonesSettingsTab', () => {
     expect(tickGroup).toBeDefined()
     expect(isVisible(tickGroup.visible)).toBe(true)
 
-    const tickDropdown = tickGroup.items.find((item: any) => item.name === 'Tick sound')
+    const tickDropdown = tickGroup.items.find((item: any) => item.name === 'Single sound')
     expect(tickDropdown.control.type).toBe('dropdown')
     expect(tickDropdown.control.options).toEqual({ lorem: 'lorem', ipsum: 'ipsum' })
     expect(isVisible(tickDropdown.visible)).toBe(true)
@@ -104,7 +107,7 @@ describe('TickTonesSettingsTab', () => {
     plugin.settings.tickSounds = ['lorem']
 
     const definitions = tab.getSettingDefinitions()
-    const randomListDefinition = getItem(definitions, 'Random tick sounds')
+    const randomListDefinition = getItem(definitions, 'Sounds')
 
     const mockButtons: any[] = []
     const mockCreateEl = jest.fn((type: string, options: any) => {
@@ -142,13 +145,15 @@ describe('TickTonesSettingsTab', () => {
     plugin.settings.tickSounds = []
 
     const definitions = tab.getSettingDefinitions()
-    const randomListDefinition = getItem(definitions, 'Random tick sounds')
+    const randomListDefinition = getItem(definitions, 'Sounds')
 
     const mockButtons: any[] = []
     const mockCreateEl = jest.fn((type: string, options: any) => {
       const button = {
         type,
         onclick: null as null | (() => void),
+        addClass: jest.fn(),
+        removeClass: jest.fn(),
         ...options,
       }
       mockButtons.push(button)
@@ -171,15 +176,15 @@ describe('TickTonesSettingsTab', () => {
 
     expect(plugin.settings.tickSounds).toContain('lorem')
     expect(plugin.saveSettings).toHaveBeenCalled()
-    expect(tab.update as jest.Mock).toHaveBeenCalled()
+    expect(mockButtons[0].addClass).toHaveBeenCalledWith('mod-cta')
   })
 
   it('reloads sounds and updates when reload button is clicked', async () => {
     const definitions = tab.getSettingDefinitions()
-    const reloadDefinition = getItem(definitions, 'Reload')
+    const soundsGroup = getGroup(definitions, 'Sound files')
+    const reloadDefinition = soundsGroup.items[0]
 
     const mockButton: any = {
-      setButtonText: jest.fn(),
       setIcon: jest.fn().mockReturnThis(),
       setTooltip: jest.fn().mockReturnThis(),
       onClick: jest.fn((cb: () => Promise<void>) => {
@@ -199,9 +204,10 @@ describe('TickTonesSettingsTab', () => {
 
     await mockButton.click()
 
-    expect(mockButton.setButtonText).toHaveBeenCalledWith('Reload sounds')
     expect(mockButton.setIcon).toHaveBeenCalledWith('folder-open')
     expect(mockButton.setTooltip).toHaveBeenCalledWith('Open sounds folder')
+    expect(mockButton.setIcon).toHaveBeenCalledWith('refresh-cw')
+    expect(mockButton.setTooltip).toHaveBeenCalledWith('Reload sounds')
     expect(soundManager.reloadSounds).toHaveBeenCalled()
     expect(tab.update as jest.Mock).toHaveBeenCalled()
   })

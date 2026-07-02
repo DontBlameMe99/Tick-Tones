@@ -47,46 +47,23 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     const sounds = this.soundManager.getSounds()
     const hasSounds = sounds.length > 0
     const soundOptions = this.buildSoundOptions(sounds)
-    const tickSoundCount = this.plugin.settings.tickSounds.length
-    const untickSoundCount = this.plugin.settings.untickSounds.length
 
     return [
       {
         type: 'group',
-        heading: '🎉 Welcome!',
+        heading: 'Get started',
         visible: !hasSounds,
         items: [
           {
-            name: 'Thank you for installing!',
-            desc: "You're just some small steps away from unlocking the plugin's full potential.",
-          },
-        ],
-      },
-      {
-        type: 'group',
-        heading: 'To get started',
-        visible: !hasSounds,
-        items: [
-          {
-            name: 'Add your own sound files',
-            desc: "Add your own sound files to the plugin's sounds folder.",
+            name: 'Drop your audio files into the plugin sounds folder, then reload below.',
           },
           {
-            name: 'Reload the plugin',
-            desc: "Reload the plugin or use the Reload button below once you've added sounds.",
-          },
-          {
-            name: 'Customize your settings',
-            desc: 'Customize your settings and enjoy!',
-          },
-          {
-            name: 'Need help?',
-            desc: 'See the GitHub page for instructions & examples.',
+            name: 'New to Tick Tones?',
             render: (setting) => {
-              setting.setName('Need help?')
-              setting.setDesc('See the GitHub page for instructions & examples.')
+              setting.setName('New to Tick Tones?')
+              setting.setDesc('Head over to GitHub for guides and examples.')
               setting.addButton((button) => {
-                button.setButtonText('Open GitHub')
+                button.setIcon('external-link').setTooltip('Open GitHub')
                 button.onClick(() => window.open('https://github.com/DontBlameMe99/Tick-Tones'))
               })
             },
@@ -99,65 +76,57 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         visible: hasSounds,
         items: [
           {
-            name: 'Tick sound enabled',
-            desc: 'Toggle if a sound should be played when a checkbox is ticked.',
+            name: 'Enabled',
+            desc: 'Play a sound when you tick a checkbox.',
             control: { type: 'toggle', key: 'tickSoundEnabled' },
           },
           {
-            name: 'Use random tick sound',
-            desc: 'Play a random sound from a list when checkbox is ticked.',
+            name: 'Random',
+            desc: 'Pick from a selection of sounds each time.',
             visible: () => this.plugin.settings.tickSoundEnabled,
             control: { type: 'toggle', key: 'useRandomTickSound' },
           },
           {
-            name: 'Random tick sounds',
-            desc: 'Select sounds to include in the random selection. Click a sound to add/remove it from the list.',
+            name: 'Sounds',
+            desc: 'Click a sound to add or remove it from the rotation.',
             visible: () =>
               this.plugin.settings.tickSoundEnabled && this.plugin.settings.useRandomTickSound,
             render: (setting) => {
-              setting.setName('Random tick sounds')
-              setting.setDesc(
-                'Select sounds to include in the random selection. Click a sound to add/remove it from the list.'
-              )
+              setting.setName('Sounds')
+              const selected = this.plugin.settings.tickSounds
+              const updateDesc = () => {
+                const count = selected.length
+                setting.setDesc(
+                  count > 0
+                    ? `${count} selected: ${selected.join(', ')}`
+                    : 'Click a sound above to add it to the rotation.'
+                )
+              }
+              updateDesc()
               this.renderSoundList(
                 setting,
                 sounds,
-                this.plugin.settings.tickSounds,
+                selected,
                 'tick-sound-list',
-                (sound, isSelected) => {
-                  if (isSelected) {
-                    this.plugin.settings.tickSounds = this.plugin.settings.tickSounds.filter(
-                      (currentSound) => currentSound !== sound
-                    )
+                (sound, button) => {
+                  const idx = selected.indexOf(sound)
+                  if (idx >= 0) {
+                    selected.splice(idx, 1)
+                    button.removeClass('mod-cta')
                   } else {
-                    this.plugin.settings.tickSounds.push(sound)
+                    selected.push(sound)
+                    button.addClass('mod-cta')
                   }
                   this.plugin.saveSettings()
-                  this.update()
+                  updateDesc()
                 },
                 (sound, isSelected) => `tick-sound-btn${isSelected ? ' mod-cta' : ''}`
               )
             },
           },
           {
-            name: 'Selected sounds',
-            desc: `${tickSoundCount} sound(s): ${this.plugin.settings.tickSounds.join(', ')}`,
-            visible: () =>
-              this.plugin.settings.tickSoundEnabled &&
-              this.plugin.settings.useRandomTickSound &&
-              tickSoundCount > 0,
-          },
-          {
-            name: '⚠️ No sounds selected',
-            desc: 'Click on sounds above to add them to the random selection.',
-            visible: () =>
-              this.plugin.settings.tickSoundEnabled &&
-              this.plugin.settings.useRandomTickSound &&
-              tickSoundCount === 0,
-          },
-          {
-            name: 'Tick sound',
-            desc: 'Select a sound to play when a checkbox is ticked.',
+            name: 'Single sound',
+            desc: 'Pick a single sound to play on tick.',
             visible: () =>
               this.plugin.settings.tickSoundEnabled && !this.plugin.settings.useRandomTickSound,
             control: {
@@ -167,8 +136,8 @@ export class TickTonesSettingsTab extends PluginSettingTab {
             },
           },
           {
-            name: 'Tick sound volume',
-            desc: 'Adjust the volume of the sound when a checkbox is ticked.',
+            name: 'Volume',
+            desc: 'How loud the tick sound plays.',
             visible: () => this.plugin.settings.tickSoundEnabled,
             control: {
               type: 'slider',
@@ -179,22 +148,17 @@ export class TickTonesSettingsTab extends PluginSettingTab {
             },
           },
           {
-            name: 'Test tick sound',
-            desc: 'Click to test out your checkbox tick sound configuration.',
+            name: '',
             visible: () => this.plugin.settings.tickSoundEnabled,
             render: (setting) => {
-              setting.setName('Test tick sound')
-              setting.setDesc('Click to test out your checkbox tick sound configuration.')
               setting.addButton((button) => {
-                button.setButtonText('Play sound')
+                button.setIcon('play').setTooltip('Play tick sound')
                 button.onClick(() => {
                   const selectedSound = this.plugin.settings.tickSound
-
                   if (!selectedSound) {
                     console.warn('No sound selected, cannot play sound.')
                     return
                   }
-
                   this.soundManager.playTickSound().catch((err) => {
                     console.error('Failed to play tick sound.', err)
                   })
@@ -210,65 +174,57 @@ export class TickTonesSettingsTab extends PluginSettingTab {
         visible: hasSounds,
         items: [
           {
-            name: 'Untick sound enabled',
-            desc: 'Toggle if a sound should be played when a checkbox is unticked.',
+            name: 'Enabled',
+            desc: 'Play a sound when you untick a checkbox.',
             control: { type: 'toggle', key: 'untickSoundEnabled' },
           },
           {
-            name: 'Use random untick sound',
-            desc: 'Play a random sound from a list when checkbox is unticked.',
+            name: 'Random',
+            desc: 'Pick from a selection of sounds each time.',
             visible: () => this.plugin.settings.untickSoundEnabled,
             control: { type: 'toggle', key: 'useRandomUntickSound' },
           },
           {
-            name: 'Random untick sounds',
-            desc: 'Select sounds to include in the random selection. Click a sound to add/remove it from the list.',
+            name: 'Sounds',
+            desc: 'Click a sound to add or remove it from the rotation.',
             visible: () =>
               this.plugin.settings.untickSoundEnabled && this.plugin.settings.useRandomUntickSound,
             render: (setting) => {
-              setting.setName('Random untick sounds')
-              setting.setDesc(
-                'Select sounds to include in the random selection. Click a sound to add/remove it from the list.'
-              )
+              setting.setName('Sounds')
+              const selected = this.plugin.settings.untickSounds
+              const updateDesc = () => {
+                const count = selected.length
+                setting.setDesc(
+                  count > 0
+                    ? `${count} selected: ${selected.join(', ')}`
+                    : 'Click a sound above to add it to the rotation.'
+                )
+              }
+              updateDesc()
               this.renderSoundList(
                 setting,
                 sounds,
-                this.plugin.settings.untickSounds,
+                selected,
                 'untick-sound-list',
-                (sound, isSelected) => {
-                  if (isSelected) {
-                    this.plugin.settings.untickSounds = this.plugin.settings.untickSounds.filter(
-                      (currentSound) => currentSound !== sound
-                    )
+                (sound, button) => {
+                  const idx = selected.indexOf(sound)
+                  if (idx >= 0) {
+                    selected.splice(idx, 1)
+                    button.removeClass('mod-cta')
                   } else {
-                    this.plugin.settings.untickSounds.push(sound)
+                    selected.push(sound)
+                    button.addClass('mod-cta')
                   }
                   this.plugin.saveSettings()
-                  this.update()
+                  updateDesc()
                 },
                 (_sound, isSelected) => (isSelected ? 'mod-cta' : '')
               )
             },
           },
           {
-            name: 'Selected sounds',
-            desc: `${untickSoundCount} sound(s): ${this.plugin.settings.untickSounds.join(', ')}`,
-            visible: () =>
-              this.plugin.settings.untickSoundEnabled &&
-              this.plugin.settings.useRandomUntickSound &&
-              untickSoundCount > 0,
-          },
-          {
-            name: '⚠️ No sounds selected',
-            desc: 'Click on sounds above to add them to the random selection.',
-            visible: () =>
-              this.plugin.settings.untickSoundEnabled &&
-              this.plugin.settings.useRandomUntickSound &&
-              untickSoundCount === 0,
-          },
-          {
-            name: 'Untick sound',
-            desc: 'Select a sound to be played when a checkbox is unticked.',
+            name: 'Single sound',
+            desc: 'Pick a single sound to play on untick.',
             visible: () =>
               this.plugin.settings.untickSoundEnabled && !this.plugin.settings.useRandomUntickSound,
             control: {
@@ -278,8 +234,8 @@ export class TickTonesSettingsTab extends PluginSettingTab {
             },
           },
           {
-            name: 'Untick sound volume',
-            desc: 'Adjust the volume of the sound when a checkbox is unticked.',
+            name: 'Volume',
+            desc: 'How loud the untick sound plays.',
             visible: () => this.plugin.settings.untickSoundEnabled,
             control: {
               type: 'slider',
@@ -290,22 +246,17 @@ export class TickTonesSettingsTab extends PluginSettingTab {
             },
           },
           {
-            name: 'Test untick sound',
-            desc: 'Click to test out your checkbox untick sound configuration.',
+            name: '',
             visible: () => this.plugin.settings.untickSoundEnabled,
             render: (setting) => {
-              setting.setName('Test untick sound')
-              setting.setDesc('Click to test out your checkbox untick sound configuration.')
               setting.addButton((button) => {
-                button.setButtonText('Play sound')
+                button.setIcon('play').setTooltip('Play untick sound')
                 button.onClick(() => {
                   const selectedSound = this.plugin.settings.untickSound
-
                   if (!selectedSound) {
                     console.warn('No sound selected, cannot play sound.')
                     return
                   }
-
                   this.soundManager.playUntickSound().catch((err) => {
                     console.error('Failed to play untick sound.', err)
                   })
@@ -317,20 +268,17 @@ export class TickTonesSettingsTab extends PluginSettingTab {
       },
       {
         type: 'group',
-        heading: 'Sounds',
+        heading: 'Sound files',
         items: [
           {
-            name: 'Reload',
-            desc: 'Click to reload the available sounds.',
+            name: 'Open the sounds folder to add or remove audio files, then reload.',
             render: (setting) => {
-              setting.setName('Reload')
-              setting.setDesc('Click to reload the available sounds.')
               setting.addButton((button) => {
                 button.setIcon('folder-open').setTooltip('Open sounds folder')
                 button.onClick(() => this.openSoundsFolder())
               })
               setting.addButton((button) => {
-                button.setButtonText('Reload sounds')
+                button.setIcon('refresh-cw').setTooltip('Reload sounds')
                 button.onClick(async () => {
                   try {
                     await this.soundManager.reloadSounds()
@@ -391,7 +339,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
     sounds: string[],
     selectedSounds: string[],
     listClass: string,
-    onToggle: (sound: string, isSelected: boolean) => void,
+    onToggle: (sound: string, button: HTMLButtonElement) => void,
     getButtonClass: (sound: string, isSelected: boolean) => string
   ) {
     setting.controlEl.empty()
@@ -405,7 +353,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
       })
 
       button.onclick = () => {
-        onToggle(sound, isSelected)
+        onToggle(sound, button)
       }
     })
   }
