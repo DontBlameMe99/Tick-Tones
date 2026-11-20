@@ -25,12 +25,12 @@
   "bugs": {
     "url": "https://github.com/DontBlameMeDev/Tick-Tones/issues"
   },
-  "packageManager": "bun@1.4.4",
+  "packageManager": "bun@1.4.5",
   "devDependencies": {
-    "@types/bun": "^1.4.4",
+    "@types/bun": "^1.4.5",
     "@types/howler": "^2.2.13",
     "@types/node": "^26.6.6",
-    "bun-types": "^1.4.4",
+    "bun-types": "^1.4.5",
     "esbuild": "^0.28.2",
     "obsidian": "^1.14.4",
     "ts-node": "^10.9.2",
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "howler": "^2.2.4",
-    "semver": "^7.8.5",
+    "semver": "^7.8.6",
     "tslib": "^2.9.1"
   }
 }

@@ -2,7 +2,7 @@
   "id": "tick-tones",
   "name": "Tick Tones",
   "version": "1.9.0",
-  "minAppVersion": "1.14.4",
+  "minAppVersion": "1.15.1",
   "description": "Plays a tone when you tick a checkbox.",
   "author": "DontBlameMe",
   "authorUrl": "https://github.com/DontBlameMeDev",
