@@ -23,13 +23,6 @@ const SAMPLE_SOUNDS: Array<{ name: string; url: string }> = [
   },
 ]
 
-const CONTROL_UPDATE_KEYS = new Set([
-  'tickSoundEnabled',
-  'useRandomTickSound',
-  'untickSoundEnabled',
-  'useRandomUntickSound',
-])
-
 type TickTonesSettingKey = keyof TickTonesSettings
 
 export class TickTonesSettingsTab extends PluginSettingTab {
@@ -217,9 +210,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
               setting.addButton((button) => {
                 button.setIcon('play').setTooltip('Play tick sound')
                 button.onClick(() => {
-                  this.soundManager.playTickSound().catch((err) => {
-                    console.error('Failed to play tick sound.', err)
-                  })
+                  this.soundManager.playTickSound()
                 })
               })
             },
@@ -312,9 +303,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
               setting.addButton((button) => {
                 button.setIcon('play').setTooltip('Play untick sound')
                 button.onClick(() => {
-                  this.soundManager.playUntickSound().catch((err) => {
-                    console.error('Failed to play untick sound.', err)
-                  })
+                  this.soundManager.playUntickSound()
                 })
               })
             },
@@ -380,11 +369,7 @@ export class TickTonesSettingsTab extends PluginSettingTab {
 
     this.plugin.saveSettings()
 
-    if (CONTROL_UPDATE_KEYS.has(key)) {
-      this.update()
-    } else {
-      this.refreshDomState()
-    }
+    this.refreshDomState()
   }
 
   private buildSoundOptions(sounds: string[]): Record<string, string> {
@@ -401,9 +386,9 @@ export class TickTonesSettingsTab extends PluginSettingTab {
   ) {
     setting.controlEl.empty()
     const list = setting.controlEl.createDiv(listClass)
-
+    const selected = new Set(selectedSounds)
     sounds.forEach((sound) => {
-      const isSelected = selectedSounds.includes(sound)
+      const isSelected = selected.has(sound)
       const button = list.createEl('button', {
         text: sound,
         cls: getButtonClass(sound, isSelected),

@@ -48,15 +48,19 @@ export class SoundLoader {
   }
 }
 
-function uint8ToBase64(bytes: Uint8Array): string {
-  let binary = ''
-  const length = bytes.byteLength
+const BASE64_CHUNK_SIZE = 24 * 1024
 
-  for (let i = 0; i < length; i++) {
-    binary += String.fromCharCode(bytes[i])
+function uint8ToBase64(bytes: Uint8Array): string {
+  if (typeof Buffer !== 'undefined') {
+    return Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength).toString('base64')
   }
 
-  return btoa(binary)
+  const parts: string[] = []
+  for (let i = 0; i < bytes.length; i += BASE64_CHUNK_SIZE) {
+    const chunk = bytes.subarray(i, i + BASE64_CHUNK_SIZE)
+    parts.push(btoa(Reflect.apply(String.fromCharCode, null, chunk as unknown as number[])))
+  }
+  return parts.join('')
 }
 
 function getMimeType(ext: string): string {
