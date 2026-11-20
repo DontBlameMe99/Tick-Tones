@@ -21,7 +21,7 @@ sounds, volume control, and a variety of audio formats.
 
 ## Installation
 
-**Minimum Obsidian version:** 1.13.0
+**Minimum Obsidian version:** 1.15.1
 
 ### From Obsidian
 
