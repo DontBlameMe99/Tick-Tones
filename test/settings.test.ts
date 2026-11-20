@@ -83,12 +83,13 @@ describe('TickTonesSettingsTab', () => {
     expect(isVisible(tickDropdown.visible)).toBe(true)
   })
 
-  it('setControlValue updates toggles and triggers update', () => {
+  it('setControlValue updates toggles and refreshes DOM state', () => {
     tab.setControlValue('tickSoundEnabled', false)
 
     expect(plugin.settings.tickSoundEnabled).toBe(false)
     expect(plugin.saveSettings).toHaveBeenCalled()
-    expect(tab.update as jest.Mock).toHaveBeenCalled()
+    expect(tab.update as jest.Mock).not.toHaveBeenCalled()
+    expect(tab.refreshDomState as jest.Mock).toHaveBeenCalled()
   })
 
   it('maps volume controls to stored values', () => {

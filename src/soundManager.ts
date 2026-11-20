@@ -6,6 +6,8 @@ import type { TickTonesSettings } from './types'
 export class SoundManager {
   soundCache: Record<string, Howl> = {}
   private loadedSounds: Record<string, string> = {}
+  private hasSounds = false
+  private soundVolumes: Record<string, number> = {}
   private soundLoader: SoundLoader
   private settings: TickTonesSettings
 
@@ -16,10 +18,11 @@ export class SoundManager {
 
   async init(): Promise<void> {
     this.loadedSounds = await this.soundLoader.loadSounds()
+    this.hasSounds = Object.keys(this.loadedSounds).length > 0
   }
 
-  async playSound(sound: string, volume: number): Promise<void> {
-    if (Object.keys(this.loadedSounds).length === 0) {
+  playSound(sound: string, volume: number): void {
+    if (!this.hasSounds) {
       console.warn('No sounds found.  Aborting.')
       return
     }
@@ -38,8 +41,10 @@ export class SoundManager {
       this.soundCache[sound] = howl
     }
 
-    howl.volume(volume)
-
+    if (this.soundVolumes[sound] !== volume) {
+      howl.volume(volume)
+      this.soundVolumes[sound] = volume
+    }
     howl.play()
   }
 
@@ -57,15 +62,13 @@ export class SoundManager {
     return sounds[randomIndex]
   }
 
-  public async playTickSound(): Promise<void> {
+  public playTickSound(): void {
     if (!this.settings.tickSoundEnabled) {
       return
     }
 
     if (!this.settings.useRandomTickSound) {
-      this.playSound(this.settings.tickSound, this.settings.tickSoundVolume).catch((error) => {
-        console.error(error)
-      })
+      this.playSound(this.settings.tickSound, this.settings.tickSoundVolume)
       return
     }
 
@@ -75,20 +78,16 @@ export class SoundManager {
       return
     }
 
-    this.playSound(randomSound, this.settings.tickSoundVolume).catch((error) => {
-      console.error(error)
-    })
+    this.playSound(randomSound, this.settings.tickSoundVolume)
   }
 
-  public async playUntickSound(): Promise<void> {
+  public playUntickSound(): void {
     if (!this.settings.untickSoundEnabled) {
       return
     }
 
     if (!this.settings.useRandomUntickSound) {
-      this.playSound(this.settings.untickSound, this.settings.untickSoundVolume).catch((error) => {
-        console.error(error)
-      })
+      this.playSound(this.settings.untickSound, this.settings.untickSoundVolume)
       return
     }
 
@@ -98,23 +97,26 @@ export class SoundManager {
       return
     }
 
-    this.playSound(randomSound, this.settings.untickSoundVolume).catch((error) => {
-      console.error(error)
-    })
+    this.playSound(randomSound, this.settings.untickSoundVolume)
   }
 
   public getSounds(): string[] {
     return Object.keys(this.loadedSounds)
   }
 
+  private disposeSounds(): void {
+    Object.values(this.soundCache).forEach((howl) => howl.unload())
+    this.soundCache = {}
+    this.soundVolumes = {}
+  }
+
   public async reloadSounds(): Promise<void> {
     this.loadedSounds = await this.soundLoader.loadSounds()
+    this.hasSounds = Object.keys(this.loadedSounds).length > 0
+    this.disposeSounds()
   }
 
   public unload(): void {
-    Object.values(this.soundCache).forEach((howl) => {
-      howl.unload()
-    })
-    this.soundCache = {}
+    this.disposeSounds()
   }
 }

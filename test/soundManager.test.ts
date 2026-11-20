@@ -112,6 +112,15 @@ describe('SoundManager', () => {
       expect(mockHowlInstance.volume).toHaveBeenCalledWith(0.7)
       expect(mockHowlInstance.play).toHaveBeenCalledTimes(2)
     })
+
+    it('skips redundant volume updates on cached Howls', async () => {
+      await soundManager.playSound('lorem', 0.5)
+      await soundManager.playSound('lorem', 0.5)
+      await soundManager.playSound('lorem', 0.7)
+
+      expect(mockHowlInstance.volume).toHaveBeenCalledTimes(2)
+      expect(mockHowlInstance.play).toHaveBeenCalledTimes(3)
+    })
   })
 
   describe('playTickSound', () => {
@@ -277,6 +286,17 @@ describe('SoundManager', () => {
 
       await soundManager.reloadSounds()
       expect(soundManager.getSounds()).toEqual(['ipsum', 'dolor'])
+    })
+
+    it('unloads cached Howls when sounds change', async () => {
+      mockLoadSounds.mockResolvedValue({ lorem: 'data:audio/mp3;base64,lorem' })
+      await soundManager.init()
+      await soundManager.playSound('lorem', 0.5)
+
+      await soundManager.reloadSounds()
+
+      expect(mockHowlInstance.unload).toHaveBeenCalledTimes(1)
+      expect(soundManager.soundCache).toEqual({})
     })
   })
 

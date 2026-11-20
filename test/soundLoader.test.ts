@@ -106,7 +106,7 @@ describe('SoundLoader', () => {
     expect(Array.from(decoded)).toEqual(highBytes)
   })
 
-  it('handles all 256 byte values without throwing', async () => {
+  it('encodes all 256 byte values exactly', async () => {
     adapter.exists.mockResolvedValue(true)
     adapter.list.mockResolvedValue({
       files: ['/plugins/my-plugin/assets/full.wav'],
@@ -115,7 +115,40 @@ describe('SoundLoader', () => {
     adapter.readBinary.mockResolvedValue(allBytes)
 
     const loader = new SoundLoader(app, '/plugins/my-plugin')
-    await expect(loader.loadSounds()).resolves.toHaveProperty('full')
+    const sounds = await loader.loadSounds()
+
+    const base64 = sounds.full.split(',')[1]
+    expect(Array.from(Buffer.from(base64, 'base64'))).toEqual(allBytes)
+  })
+
+  it('encodes multiple chunks exactly without Buffer', async () => {
+    adapter.exists.mockResolvedValue(true)
+    adapter.list.mockResolvedValue({
+      files: ['/plugins/my-plugin/assets/large.wav'],
+    })
+    const bytes = Array.from({ length: 60_000 }, (_, i) => (i * 37) & 0xff)
+    adapter.readBinary.mockResolvedValue(bytes)
+
+    const loader = new SoundLoader(app, '/plugins/my-plugin')
+    const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'Buffer')
+    let sounds!: Record<string, string>
+    Object.defineProperty(globalThis, 'Buffer', {
+      value: undefined,
+      configurable: true,
+      writable: true,
+    })
+    try {
+      sounds = await loader.loadSounds()
+    } finally {
+      if (descriptor) {
+        Object.defineProperty(globalThis, 'Buffer', descriptor)
+      } else {
+        Reflect.deleteProperty(globalThis, 'Buffer')
+      }
+    }
+
+    const base64 = sounds.large.split(',')[1]
+    expect(Array.from(Buffer.from(base64, 'base64'))).toEqual(bytes)
   })
 
   it('handles errors gracefully and returns empty object', async () => {
