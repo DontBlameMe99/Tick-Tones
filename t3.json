@@ -1,0 +1,12 @@
+{
+  "$schema": "https://t3.codes/schema/t3.json",
+  "scripts": [
+    {
+      "name": "Cleanup",
+      "command": "rm -rf .tmp node_modules main.js coverage",
+      "icon": "play",
+      "runOnWorktreeCreate": false,
+      "runOnSettle": true
+    }
+  ]
+}
