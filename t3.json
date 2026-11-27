@@ -3,7 +3,7 @@
   "scripts": [
     {
       "name": "Cleanup",
-      "command": "rm -rf .tmp node_modules main.js coverage",
+      "command": "command rm -rf .tmp node_modules main.js coverage",
       "icon": "play",
       "runOnWorktreeCreate": false,
       "runOnSettle": true
